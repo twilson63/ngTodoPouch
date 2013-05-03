@@ -1,4 +1,4 @@
-# ngToDoPouch
+# ngToDoPouch (work in progress....)
 
 An AngularJS Tutorial that will walk you through creating a
 ToDo Application using a local PouchDb. 
