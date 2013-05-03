@@ -227,6 +227,8 @@ Finally, we want to add a form with a directive `ng-submit`, which is assigned t
 
 Open the browser and you should now see the total text and input form.
 
+# Exercise 2 - Controller
+
 Lets wire the view to the controller and models.
 
 open main.js and add the following:
@@ -237,18 +239,21 @@ $scope.todos = [];
 
 initialize the $scope.todos array.
 
-```
-$scope.remaining = function() {
-  var count = 0;
-  angular.forEach($scope.todos, function(todo) {
-      count += todo.done ? 0 : 1;
-  });
-  return count;
+```js
+$scope.addTodo = function() {
+  var newTodo = {
+    _id: Math.uuid(),
+    text: $scope.todoText,
+    done: false
+  };
+  $scope.todos.push(newTodo);
+  $scope.todoText = '';
 };
 ```
 
-add the remaining function to the controller.  Now we should 
-see 0 of 0 remaining.
+Add todo function
+
+# Exercise 3 
 
 ``` js
 $scope.removeDone = function() {
@@ -270,36 +275,34 @@ $scope.removeDone = function() {
   });
 };
 ```
+Remove all items that are marked as done.
 
-```js
-$scope.addTodo = function() {
-  var newTodo = {
-    _id: Math.uuid(),
-    text: $scope.todoText,
-    done: false
-  };
-  $scope.todos.push(newTodo);
-  $scope.todoText = '';
-};
+
+# Exercise 4 
+
 ```
-
-``` js
-$scope.removeDone = function() {
-  var oldTodos = $scope.todos;
-  $scope.todos = [];
-  angular.forEach(oldTodos, function(todo) {
-    if (!todo.done) {
-      $scope.todos.push(todo);
-    }
-    else {
-      $scope.removeTodo(todo);
-    }
+$scope.remaining = function() {
+  var count = 0;
+  angular.forEach($scope.todos, function(todo) {
+      count += todo.done ? 0 : 1;
   });
+  return count;
 };
 ```
 
-$scope.removeTodo = function(todo) {
-  $scope.todos.splice(
-    $scope.todos.indexOf(todo), 1);
-};
+add the remaining function to the controller.  Now we should 
+see 0 of 0 remaining.
+
+# Exercise 5 - PouchDb
+
+- Create Pouch Service
+- Include in the controller
+
+# Exercise 6 - Persist Todo List
+
+# Exercise 7 - Load Todo List
+
+# Exercise 8 - Update Todo List status
+
+# Exercise 9 - Remove done tasks from list
 
