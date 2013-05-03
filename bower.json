@@ -1,0 +1,16 @@
+{
+  "name": "todo-pouch",
+  "version": "0.0.1",
+  "main": "index.html",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "jquery": "~2.0.0",
+    "bootstrap": "~2.1.1",
+    "angular": "~1.0.6",
+    "pouchdb-nightly.min": "http://download.pouchdb.com/pouchdb-nightly.min.js"
+  }
+}
