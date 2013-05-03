@@ -1,0 +1,335 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>ng-todopouch by twilson63</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>ng-todopouch</h1>
+        <p>Yet another Todo Tutorial using AngularJS and PouchDb</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/twilson63/ngTodoPouch" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/twilson63/ngTodoPouch/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/twilson63/ngTodoPouch/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>ngToDoPouch</h1>
+
+<p>An AngularJS Tutorial that will walk you through creating a
+ToDo Application using a local PouchDb. </p>
+
+<h2>Setup</h2>
+
+<ul>
+<li>Install brackets (<a href="http://brackets.io/">http://brackets.io/</a>)</li>
+<li>Install Emmet Extension (<a href="https://github.com/emmetio/emmet/downloads">https://github.com/emmetio/emmet/downloads</a>)</li>
+<li>Install Nodejs (<a href="http://nodejs.org">http://nodejs.org</a>)</li>
+<li>Open console</li>
+</ul><div class="highlight"><pre>mkdir todo-pouch
+<span class="nb">cd </span>todo-pouch
+npm install bower -g
+bower init
+bower install jquery bootstrap.css angular --save
+ower install http://download.pouchdb.com/pouchdb-nightly.min.js --save
+touch index.html
+</pre></div>
+
+<p>index.html - emmet version</p>
+
+<div class="highlight"><pre>html[ng-app="Todo"]&gt;head&gt;title{TODO POUCH}+link[href="/components/bootstrap/css/bootstrap.css"]^body&gt;.container&gt;h1{TODO POUCH}+ng-view^script[src="/components/jquery/jquery.js"]+script[src="/components/angular/angular.js"]+script[src="/components/pouchdb-nightly.min/index.js"]+script[src="/app/ng-app.js"]
+</pre></div>
+
+<p>index.html</p>
+
+<div class="highlight"><pre><span class="cp">&lt;!doctype html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">ng-app=</span><span class="s">"Todo"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;title&gt;</span>TODO POUCH<span class="nt">&lt;/title&gt;</span>
+  <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"/components/bootstrap/css/bootstrap.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>TODO POUCH<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;ng</span><span class="na">-view</span><span class="nt">&gt;</span><span class="err">&lt;</span>/ng-view&gt;
+  <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/jquery/jquery.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/angular/angular.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/pouchdb-nightly.min/index.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<p>setup grunt</p>
+
+<div class="highlight"><pre>npm install grunt-cli -g
+npm init
+touch Gruntfile.js
+npm install grunt-contrib-concat grunt-contrib-jshint grunt-contrib-uglify grunt-contrib-watch --save-dev
+</pre></div>
+
+<p>Paste the following js in Gruntfile.js</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">www</span> <span class="o">=</span> <span class="nx">__dirname</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">appFiles</span> <span class="o">=</span> <span class="p">[</span>
+<span class="nx">www</span> <span class="o">+</span> <span class="s1">'/app/app.js'</span><span class="p">,</span>
+<span class="nx">www</span> <span class="o">+</span> <span class="s1">'/app/services/*.js'</span><span class="p">,</span>
+<span class="nx">www</span> <span class="o">+</span> <span class="s1">'/app/filters/*.js'</span><span class="p">,</span>
+<span class="nx">www</span> <span class="o">+</span> <span class="s1">'/app/directives/*.js'</span><span class="p">,</span>
+<span class="nx">www</span> <span class="o">+</span> <span class="s1">'/app/controllers/*.js'</span>
+<span class="p">];</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">grunt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">grunt</span><span class="p">.</span><span class="nx">initConfig</span><span class="p">({</span>
+    <span class="nx">jshint</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">files</span><span class="o">:</span> <span class="nx">appFiles</span>
+    <span class="p">},</span>
+    <span class="nx">concat</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">app</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">src</span><span class="o">:</span> <span class="nx">appFiles</span><span class="p">,</span>
+      <span class="nx">dest</span><span class="o">:</span> <span class="nx">www</span> <span class="o">+</span> <span class="s1">'/ng-app.js'</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nx">uglify</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">grxnet</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">src</span><span class="o">:</span> <span class="p">[</span> <span class="nx">www</span> <span class="o">+</span> <span class="s1">'/ng-app.js'</span><span class="p">],</span>
+        <span class="nx">dest</span><span class="o">:</span> <span class="nx">www</span> <span class="o">+</span> <span class="s1">'/ng-app.min.js'</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nx">watch</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">scripts</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">files</span><span class="o">:</span> <span class="nx">www</span> <span class="o">+</span> <span class="s1">'/app/**/*.js'</span><span class="p">,</span>
+        <span class="nx">tasks</span><span class="o">:</span> <span class="p">[</span><span class="s1">'jshint'</span><span class="p">,</span><span class="s1">'concat'</span><span class="p">],</span>
+        <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+          <span class="nx">interrupt</span><span class="o">:</span> <span class="kc">true</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+
+  <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">'grunt-contrib-concat'</span><span class="p">);</span>
+  <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">'grunt-contrib-jshint'</span><span class="p">);</span>
+  <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">'grunt-contrib-uglify'</span><span class="p">);</span>
+  <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">'grunt-contrib-watch'</span><span class="p">);</span>
+
+  <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">'default'</span><span class="p">,</span> <span class="s1">'jshint concat uglify'</span><span class="p">);</span>
+
+<span class="p">}</span>
+
+</pre></div>
+
+<p>Install web server</p>
+
+<div class="highlight"><pre>npm install w3 -g
+</pre></div>
+
+<p>create app directory</p>
+
+<div class="highlight"><pre>mkdir app
+touch app/app.js
+mkdir app/controllers
+touch app/controllers/main.js
+mkdir app/templates
+touch app/templates/main.html
+</pre></div>
+
+<p>open app/app.js and setup the application</p>
+
+<pre><code>angular.module('Todo', [])
+  .config(function($routeProvider, $locationProvider) {
+    'use strict';
+
+    $routeProvider
+      .when('/', { 
+        controller: 'MainCtrl', 
+        templateUrl: '/app/templates/main.html'
+      });
+    $locationProvider.html5Mode(true);
+  });
+</code></pre>
+
+<p>In the app.js we are adding a config section, in this section we
+are injected two services.  ($routeProvider, $locationProvider).</p>
+
+<p>$routeProvider gives the ability to do routing.</p>
+
+<p>$locationProvider gives us html5 push updates.</p>
+
+<p>open app/controllers/main.js</p>
+
+<div class="highlight"><pre><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'Todo'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'MainCtrl'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="p">});</span>
+</pre></div>
+
+<p>open app/templates/main.html</p>
+
+<pre><code>&lt;h1&gt;Todo Pouch&lt;/h1&gt;
+</code></pre>
+
+<p>Lets confirm we have everything setup correctly.</p>
+
+<p>Open two console windows</p>
+
+<p>console 1 - make sure you are in the project dir</p>
+
+<div class="highlight"><pre>grunt concat
+grunt watch
+</pre></div>
+
+<p>console 2 - make sure your in the project dir</p>
+
+<div class="highlight"><pre>w3
+</pre></div>
+
+<p>open browser to http://localhost:3000</p>
+
+<p>If you see Todo Pouch in your browser, then we are setup correctly.</p>
+
+<h1>Exercise 1 - Create the declarative templatek</h1>
+
+<p>We will step through the declarative template line by line.</p>
+
+<div class="highlight"><pre><span class="nt">&lt;span&gt;</span>{{remaining()}} of {{todos.length}} remaining<span class="nt">&lt;/span&gt;</span>
+</pre></div>
+
+<p>Show how many todos of total have not been completed.
+We are using the ng-bind directive to call $scope.remaining() function to get the number of todos that have not been marked completed.  Then we use the ng-bind directive to call the $scope.todos.length to get the total count of todo items.</p>
+
+<div class="highlight"><pre>[<span class="nt">&lt;a</span> <span class="na">ng-href=</span><span class="s">""</span> <span class="na">ng-click=</span><span class="s">"removeDone()"</span><span class="nt">&gt;</span>Remove done<span class="nt">&lt;/a&gt;</span>]
+</pre></div>
+
+<p>Give the user the ability to remove all done tasks from the list.  Here we are using an anchor element and a ng-click attribute to map the anchor click event to the $scope.removeDone function.</p>
+
+<div class="highlight"><pre><span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"unstyled"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;li</span> <span class="na">ng-repeat=</span><span class="s">"todo in todos"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">ng-model=</span><span class="s">"todo.done"</span> <span class="na">ng-click=</span><span class="s">"updateTodo(todo)"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;span</span> <span class="na">ng-class=</span><span class="s">"{{done: todo.done"</span><span class="nt">&gt;</span>{{todo.text}}<span class="nt">&lt;/span&gt;</span>
+  <span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</pre></div>
+
+<p>Create an unorded list of todo tasks, for each line item 
+we want to provide a checkbox with an attribute <code>ng-model</code> assigned 
+to $scope.todo.done and map the input ng-click attribute to $scope.updateTodo(todo).</p>
+
+<p>Next we want to use the ng-class directive to add the <code>done</code> class to the span element if <code>todo.done === true</code>.  And use the ng-bind directive to show the todo task.</p>
+
+<div class="highlight"><pre><span class="nt">&lt;form</span> <span class="na">ng-submit=</span><span class="s">"addTodo()"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">ng-model=</span><span class="s">"todoText"</span>  <span class="na">size=</span><span class="s">"30"</span>
+         <span class="na">placeholder=</span><span class="s">"add new todo here"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">"btn btn-primary"</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"add"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</pre></div>
+
+<p>Finally, we want to add a form with a directive <code>ng-submit</code>, which is assigned to <code>$scope.addTodo()</code>.  In the form, we are assigning the input element <code>ng-model</code> to $scope.todoText.</p>
+
+<p>Open the browser and you should now see the total text and input form.</p>
+
+<p>Lets wire the view to the controller and models.</p>
+
+<p>open main.js and add the following:</p>
+
+<div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span> <span class="o">=</span> <span class="p">[];</span>
+</pre></div>
+
+<p>initialize the $scope.todos array.</p>
+
+<pre><code>$scope.remaining = function() {
+  var count = 0;
+  angular.forEach($scope.todos, function(todo) {
+      count += todo.done ? 0 : 1;
+  });
+  return count;
+};
+</code></pre>
+
+<p>add the remaining function to the controller.  Now we should 
+see 0 of 0 remaining.</p>
+
+<div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">removeDone</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// backup array</span>
+  <span class="kd">var</span> <span class="nx">oldTodos</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">;</span>
+  <span class="c1">// reset to an empty array</span>
+  <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="c1">// loop through the old values</span>
+  <span class="nx">angular</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">oldTodos</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// if todo is marked as done, or checked.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">todo</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// add todo to the array</span>
+      <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="c1">// remove todo from array</span>
+      <span class="nx">$scope</span><span class="p">.</span><span class="nx">removeTodo</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">};</span>
+</pre></div>
+
+<div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">addTodo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">newTodo</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">_id</span><span class="o">:</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">uuid</span><span class="p">(),</span>
+    <span class="nx">text</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">todoText</span><span class="p">,</span>
+    <span class="nx">done</span><span class="o">:</span> <span class="kc">false</span>
+  <span class="p">};</span>
+  <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">newTodo</span><span class="p">);</span>
+  <span class="nx">$scope</span><span class="p">.</span><span class="nx">todoText</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+
+<div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">removeDone</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">oldTodos</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">;</span>
+  <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="nx">angular</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">oldTodos</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">todo</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">$scope</span><span class="p">.</span><span class="nx">removeTodo</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">};</span>
+</pre></div>
+
+<p>$scope.removeTodo = function(todo) {
+  $scope.todos.splice(
+    $scope.todos.indexOf(todo), 1);
+};</p>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/twilson63">twilson63</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
