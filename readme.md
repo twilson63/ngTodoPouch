@@ -202,7 +202,7 @@ Give the user the ability to remove all done tasks from the list.  Here we are u
 ``` html
 <ul class="unstyled">
   <li ng-repeat="todo in todos">
-    <input type="checkbox" ng-model="todo.done" ng-click="updateTodo(todo)">
+    <input type="checkbox" ng-model="todo.done">
     <span ng-class="{{done: todo.done">{{todo.text}}</span>
   </li>
 </ul>

@@ -31,16 +31,6 @@ angular.module('Todo')
       $scope.todoText = '';
     };
 
-    $scope.updateTodo = function() {
-      var newTodo = {
-        _id: Math.uuid(),
-        text: $scope.todoText,
-        done: false
-      };
-      $scope.todos.push(newTodo);
-      $scope.todoText = '';
-    };
-
     $scope.removeDone = function() {
       var oldTodos = $scope.todos;
       $scope.todos = [];
