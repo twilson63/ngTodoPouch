@@ -227,6 +227,8 @@ Finally, we want to add a form with a directive `ng-submit`, which is assigned t
 
 Open the browser and you should now see the total text and input form.
 
+# Exercise 2 - Controller
+
 Lets wire the view to the controller and models.
 
 open main.js and add the following:
@@ -237,18 +239,21 @@ $scope.todos = [];
 
 initialize the $scope.todos array.
 
-```
-$scope.remaining = function() {
-  var count = 0;
-  angular.forEach($scope.todos, function(todo) {
-      count += todo.done ? 0 : 1;
-  });
-  return count;
+```js
+$scope.addTodo = function() {
+  var newTodo = {
+    _id: Math.uuid(),
+    text: $scope.todoText,
+    done: false
+  };
+  $scope.todos.push(newTodo);
+  $scope.todoText = '';
 };
 ```
 
-add the remaining function to the controller.  Now we should 
-see 0 of 0 remaining.
+Add todo function
+
+# Exercise 3 
 
 ``` js
 $scope.removeDone = function() {
@@ -270,8 +275,61 @@ $scope.removeDone = function() {
   });
 };
 ```
+Remove all items that are marked as done.
 
-```js
+
+# Exercise 4 
+
+```
+$scope.remaining = function() {
+  var count = 0;
+  angular.forEach($scope.todos, function(todo) {
+      count += todo.done ? 0 : 1;
+  });
+  return count;
+};
+```
+
+add the remaining function to the controller.  Now we should 
+see 0 of 0 remaining.
+
+# Exercise 5 - PouchDb
+
+- Create Pouch Service
+
+``` sh
+mkdir app/services
+touch app/services/pouch.js
+```
+
+pouch.js
+
+``` js
+angular.module('Todo')
+  .value('$pouch', Pouch('idb://todos'));
+```
+
+- Include in the controller
+
+main.js
+
+replace 
+
+``` js
+.controller('MainCtrl', function($scope) {
+```
+
+with
+
+``` js
+.controller('MainCtrl', function($scope, $pouch) {
+```
+
+# Exercise 6 - Persist Todo List
+
+* On Add Todo save to pouch
+
+``` js
 $scope.addTodo = function() {
   var newTodo = {
     _id: Math.uuid(),
@@ -280,26 +338,39 @@ $scope.addTodo = function() {
   };
   $scope.todos.push(newTodo);
   $scope.todoText = '';
-};
-```
-
-``` js
-$scope.removeDone = function() {
-  var oldTodos = $scope.todos;
-  $scope.todos = [];
-  angular.forEach(oldTodos, function(todo) {
-    if (!todo.done) {
-      $scope.todos.push(todo);
-    }
-    else {
-      $scope.removeTodo(todo);
-    }
+  $pouch.post(newTodo, function(err, res) {
+    if (err) { console.log(err); }
+    newTodo._id = res.id;
+    newTodo._rev = res.rev;
   });
 };
 ```
 
+# Exercise 7 - Load Todo List
+
+``` js
+$pouch.allDocs({include_docs: true}, function(err, response) {
+  $scope.$apply(function() {
+    response.rows.forEach(function(row) {
+      $scope.todos.push(row.doc);
+    });
+  });
+});
+```
+
+# Exercise 8 - Remove done tasks from list
+
+``` js
 $scope.removeTodo = function(todo) {
-  $scope.todos.splice(
-    $scope.todos.indexOf(todo), 1);
+  $pouch.remove(todo);
 };
 
+```
+
+# Exercise 9 - Update Todo List status
+
+``` js
+$scope.updateTodo = function(todo) {
+  $pouch.put(todo);
+};
+```

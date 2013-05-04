@@ -8,4 +8,5 @@ angular.module('Todo', [])
         templateUrl: '/app/templates/main.html'
       });
     $locationProvider.html5Mode(true);
-  });
+  })
+  ;

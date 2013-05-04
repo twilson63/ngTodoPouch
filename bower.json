@@ -9,8 +9,8 @@
   ],
   "dependencies": {
     "jquery": "~2.0.0",
-    "bootstrap": "~2.1.1",
+    "bootstrap.css": "~2.1.1",
     "angular": "~1.0.6",
-    "pouchdb-nightly.min": "http://download.pouchdb.com/pouchdb-nightly.min.js"
+    "pouchdb": "http://download.pouchdb.com/pouchdb-nightly.js"
   }
 }
