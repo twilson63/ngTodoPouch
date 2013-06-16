@@ -5,8 +5,8 @@ ToDo Application using a local PouchDb.
 
 ## Setup
 
-* Install brackets (http://brackets.io/)
-* Install Emmet Extension (https://github.com/emmetio/emmet/downloads)
+* (Optional) Install brackets editor (http://brackets.io/)
+* (Optional) Install Emmet html workflow Extension (https://github.com/emmetio/emmet/downloads)
 * Install Nodejs (http://nodejs.org)
 * Open console
 
@@ -16,7 +16,7 @@ cd todo-pouch
 npm install bower -g
 bower init
 bower install jquery bootstrap.css angular --save
-ower install http://download.pouchdb.com/pouchdb-nightly.min.js --save
+bower install http://download.pouchdb.com/pouchdb-nightly.min.js --save
 touch index.html
 ```
 
