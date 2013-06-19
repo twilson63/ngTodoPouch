@@ -75,7 +75,7 @@ to install jquery, bootstrap.css, angular, and pouchdb.  It works a lot like npm
 
 <div class="highlight"><pre>bower init
 bower install jquery bootstrap.css angular --save
-bower install http://download.pouchdb.com/pouchdb-nightly.min.js --save
+bower install angular-pouch --save
 </pre></div>
 
 <h3>
@@ -100,7 +100,8 @@ web document for this application.</p>
   <span class="nt">&lt;/div&gt;</span>
   <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/jquery/jquery.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
   <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/angular/angular.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/pouchdb/index.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/pouchdb-nightly.min/index.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/angular-pouch/angular-pouch.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
   <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/ng-app.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 
 <span class="nt">&lt;/body&gt;</span>
@@ -199,7 +200,7 @@ touch app/templates/main.html
 <h3>
 <a name="open-appappjs-and-setup-the-application" class="anchor" href="#open-appappjs-and-setup-the-application"><span class="octicon octicon-link"></span></a>open app/app.js and setup the application</h3>
 
-<pre><code>angular.module('Todo', [])
+<pre><code>angular.module('Todo', ['angular-pouch'])
   .config(function($routeProvider, $locationProvider) {
     'use strict';
 
@@ -246,6 +247,8 @@ are injecting two services.  ($routeProvider, $locationProvider).</p>
 <h2>
 <a name="exercise-1---create-the-declarative-template" class="anchor" href="#exercise-1---create-the-declarative-template"><span class="octicon octicon-link"></span></a>Exercise 1 - Create the declarative template</h2>
 
+<p>So now we have everything setup and we are ready to get started building our application.  In this exercise we will construct the declarative html template.  Instead of using a string based template, angularjs leverages HTML and integrates their templates into the html itself, which makes it easy and intuitive to follow.</p>
+
 <p>We will step through the declarative template line by line.</p>
 
 <div class="highlight"><pre><span class="nt">&lt;span&gt;</span>{{remaining()}} of {{todos.length}} remaining<span class="nt">&lt;/span&gt;</span>
@@ -287,14 +290,16 @@ to <code>$scope.todo.done</code> and map the input <code>ng-click</code> attribu
 <h2>
 <a name="exercise-2---controller" class="anchor" href="#exercise-2---controller"><span class="octicon octicon-link"></span></a>Exercise 2 - Controller</h2>
 
-<p>Lets wire the view to the controller and models.</p>
+<p>Fantastic, we have our declarative template in place, now we need to connect the template with our angular controller.  AngularJS controllers behave like view models, which means they are the glue between the presentation layer and the data/model layer.  In this step we are going to wire up the list of todos to an array, and the addTodo declaration to a function that creates a new js object and adds it to the array.</p>
 
-<p>open main.js and add the following:</p>
+<p>First, open main.js and add the following:</p>
 
 <div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span> <span class="o">=</span> <span class="p">[];</span>
 </pre></div>
 
-<p>initialize the $scope.todos array.</p>
+<p>This statement initializes the $scope.todos array.</p>
+
+<p>Second, we need to create the addTodo function.</p>
 
 <div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">addTodo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">newTodo</span> <span class="o">=</span> <span class="p">{</span>
@@ -307,10 +312,10 @@ to <code>$scope.todo.done</code> and map the input <code>ng-click</code> attribu
 <span class="p">};</span>
 </pre></div>
 
-<p>Add todo function</p>
-
 <h2>
 <a name="exercise-3" class="anchor" href="#exercise-3"><span class="octicon octicon-link"></span></a>Exercise 3</h2>
+
+<p>Continuing through the wire up process, in Exercise 3 we will connect the declaration of removeDone to a function.  In this function, we will create a copy of the current todo list and loop through the copy and remove any of the items that are marked as done, then add the items still in play to the new array.</p>
 
 <div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">removeDone</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="c1">// backup array</span>
@@ -332,10 +337,10 @@ to <code>$scope.todo.done</code> and map the input <code>ng-click</code> attribu
 <span class="p">};</span>
 </pre></div>
 
-<p>Remove all items that are marked as done.</p>
-
 <h2>
 <a name="exercise-4" class="anchor" href="#exercise-4"><span class="octicon octicon-link"></span></a>Exercise 4</h2>
+
+<p>Finally, we will connect the remaining declaration to a function that will provide an uptodate and accurate count of the Todo Item List.</p>
 
 <pre><code>$scope.remaining = function() {
   var count = 0;
@@ -349,8 +354,15 @@ to <code>$scope.todo.done</code> and map the input <code>ng-click</code> attribu
 <p>add the remaining function to the controller.  Now we should 
 see 0 of 0 remaining.</p>
 
+<p>After these steps, you should be able to refresh your browser at
+http://localhost:3000 and create a todo, mark it as done and remove it.  But there is one problem, these todo's are only being stored in memory, so as soon as I refresh the page they will disappear.  Lets use the new PouchDb which is an offline data-storage platform that leverages the couchDb api to store data in the browser.</p>
+
 <h2>
 <a name="exercise-5---pouchdb" class="anchor" href="#exercise-5---pouchdb"><span class="octicon octicon-link"></span></a>Exercise 5 - PouchDb</h2>
+
+<p>Added PouchDb to our application, the pouchDb library connects with HTML 5 storage solutions and gives you the developer a consistent way to store data in your clients browser so that they may access it at other times.</p>
+
+<p>By using an AngularJS server, we can build a simple wrapper around the PouchDb library which will instruct AngularJS how to inject into our controllers.</p>
 
 <ul>
 <li>Create Pouch Service</li>
@@ -358,15 +370,21 @@ see 0 of 0 remaining.</p>
 touch app/services/pouch.js
 </pre></div>
 
+<p>By using the AngularJS constant method we are able to set the $pouch service and ensure that no one else can override our assignment.</p>
+
 <p>pouch.js</p>
 
 <div class="highlight"><pre><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'Todo'</span><span class="p">)</span>
-  <span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="s1">'$pouch'</span><span class="p">,</span> <span class="nx">Pouch</span><span class="p">(</span><span class="s1">'idb://todos'</span><span class="p">));</span>
+  <span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="s1">'$db'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$pouch</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">$pouch</span><span class="p">(</span><span class="s1">'idb://todos'</span><span class="p">);</span>
+  <span class="p">});</span>
 </pre></div>
 
 <ul>
 <li>Include in the controller</li>
-</ul><p>main.js</p>
+</ul><p>Now, we need to use angularjs's dependency injection process to bring the $pouch service to our controller.  Dependency Injection is a simple concept where you basically ask the application for any services or factoriess that you may need to use in your controller, and the application fetches those for you.</p>
+
+<p>main.js</p>
 
 <p>replace </p>
 
@@ -375,11 +393,15 @@ touch app/services/pouch.js
 
 <p>with</p>
 
-<div class="highlight"><pre><span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'MainCtrl'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">,</span> <span class="nx">$pouch</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre><span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'MainCtrl'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">,</span> <span class="nx">$db</span><span class="p">)</span> <span class="p">{</span>
 </pre></div>
 
 <h2>
 <a name="exercise-6---persist-todo-list" class="anchor" href="#exercise-6---persist-todo-list"><span class="octicon octicon-link"></span></a>Exercise 6 - Persist Todo List</h2>
+
+<p>Now that we have PouchDb angularized, lets use the pouchDb
+$db service to persist our todo list.  First we need to adjust
+the addTodo function.</p>
 
 <ul>
 <li>On Add Todo save to pouch</li>
@@ -391,7 +413,7 @@ touch app/services/pouch.js
   <span class="p">};</span>
   <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">newTodo</span><span class="p">);</span>
   <span class="nx">$scope</span><span class="p">.</span><span class="nx">todoText</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
-  <span class="nx">$pouch</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">newTodo</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">$db</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">newTodo</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span> <span class="p">}</span>
     <span class="nx">newTodo</span><span class="p">.</span><span class="nx">_id</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
     <span class="nx">newTodo</span><span class="p">.</span><span class="nx">_rev</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">rev</span><span class="p">;</span>
@@ -402,7 +424,9 @@ touch app/services/pouch.js
 <h2>
 <a name="exercise-7---load-todo-list" class="anchor" href="#exercise-7---load-todo-list"><span class="octicon octicon-link"></span></a>Exercise 7 - Load Todo List</h2>
 
-<div class="highlight"><pre><span class="nx">$pouch</span><span class="p">.</span><span class="nx">allDocs</span><span class="p">({</span><span class="nx">include_docs</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+<p>Next we need to retrieve all the persisted documents from pouch, we add this function to the route of the controller function.</p>
+
+<div class="highlight"><pre><span class="nx">$db</span><span class="p">.</span><span class="nx">allDocs</span><span class="p">({</span><span class="nx">include_docs</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">$scope</span><span class="p">.</span><span class="nx">$apply</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="nx">response</span><span class="p">.</span><span class="nx">rows</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">row</span><span class="p">.</span><span class="nx">doc</span><span class="p">);</span>
@@ -414,22 +438,37 @@ touch app/services/pouch.js
 <h2>
 <a name="exercise-8---remove-done-tasks-from-list" class="anchor" href="#exercise-8---remove-done-tasks-from-list"><span class="octicon octicon-link"></span></a>Exercise 8 - Remove done tasks from list</h2>
 
-<div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">removeTodo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">$pouch</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
-<span class="p">};</span>
+<p>By adding an else to the removeDone function we can remove the 
+persisted todo from the pouch database.</p>
 
+<div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">removeDone</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">oldTodos</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">;</span>
+  <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="nx">angular</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">oldTodos</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">todo</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">$db</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">};</span>
 </pre></div>
 
 <h2>
 <a name="exercise-9---update-todo-list-status" class="anchor" href="#exercise-9---update-todo-list-status"><span class="octicon octicon-link"></span></a>Exercise 9 - Update Todo List status</h2>
 
+<p>Finally, we need to update the todo document when the done checkbox is clicked.</p>
+
 <div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">updateTodo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">$pouch</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
+  <span class="nx">$db</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
 <span class="p">};</span>
 </pre></div>
 
 <h2>
 <a name="finished" class="anchor" href="#finished"><span class="octicon octicon-link"></span></a>Finished</h2>
+
+<p>Congrats, hopefully you completed this short tutorial and learned a little bit about angularjs and pouchdb.</p>
 
 <p>Please provide feedback for improvement or if you enjoyed the exercise send me a tweet <a href="https://github.com/twilson63" class="user-mention">@twilson63</a></p>
 
