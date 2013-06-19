@@ -6,7 +6,6 @@ ToDo Application using a local PouchDb.
 ## Setup
 
 * (Optional) Install brackets editor (http://brackets.io/)
-* (Optional) Install Emmet html workflow Extension (https://github.com/emmetio/emmet/downloads)
 * Install Nodejs (http://nodejs.org)
 * Open console
 
@@ -18,12 +17,6 @@ bower init
 bower install jquery bootstrap.css angular --save
 bower install http://download.pouchdb.com/pouchdb-nightly.min.js --save
 touch index.html
-```
-
-index.html - emmet version
-
-``` html
-html[ng-app="Todo"]>head>title{TODO POUCH}+link[href="/components/bootstrap/css/bootstrap.css"]^body>.container>h1{TODO POUCH}+ng-view^script[src="/components/jquery/jquery.js"]+script[src="/components/angular/angular.js"]+script[src="/components/pouchdb-nightly.min/index.js"]+script[src="/app/ng-app.js"]
 ```
 
 index.html
@@ -182,7 +175,7 @@ open browser to http://localhost:3000
 
 If you see Todo Pouch in your browser, then we are setup correctly.
 
-# Exercise 1 - Create the declarative templatek
+# Exercise 1 - Create the declarative template
 
 We will step through the declarative template line by line.
 
@@ -374,3 +367,9 @@ $scope.updateTodo = function(todo) {
   $pouch.put(todo);
 };
 ```
+
+## Finished
+
+Please provide feedback for improvement or if you enjoyed the exercise send me a tweet @twilson63
+
+
