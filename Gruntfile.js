@@ -20,7 +20,7 @@ module.exports = function(grunt) {
       }
     },
     uglify: {
-      grxnet: {
+      app: {
         src: [ www + '/ng-app.js'],
         dest: www + '/ng-app.min.js'
       }
@@ -33,6 +33,14 @@ module.exports = function(grunt) {
           interrupt: true
         }
       }
+    },
+    connect: {
+      server: {
+        options: {
+          port: 3000,
+          base: '.'
+        }
+      }
     }
   });
 
@@ -40,7 +48,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
-  grunt.registerTask('default', 'jshint concat uglify');
-
+  grunt.registerTask('default', ['jshint', 'concat']);
+  grunt.registerTask('server', ['default', 'connect', 'watch']);
 }

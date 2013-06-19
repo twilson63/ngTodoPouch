@@ -1,51 +1,89 @@
-# ngToDoPouch (work in progress....)
+# ngToDoPouch 
 
 An AngularJS Tutorial that will walk you through creating a
-ToDo Application using a local PouchDb. 
+ToDo Application using a local PouchDb.  This tutorial should
+introduce you to some of the AngularJS concepts like directives and
+data-binding.  It will also show you how to build offline applications
+using PouchDb. 
 
 ## Setup
 
+IN order to get started with building our application we need to get a few things setup, you can use tools like Yeoman to help you in this process, but for this exercise we are going to do it manually to help get a better idea on what is going on under the hood.
+
 * (Optional) Install brackets editor (http://brackets.io/)
+
+Brackets is a new editor built on HTML5 technologies by the awesome folks over at adobe.  If you do not have an editor of choice you may want to give brackets a try.
+
 * Install Nodejs (http://nodejs.org)
+
+While we will not be doing any NodeJS development, NodeJS will play a big part of our build tool system and our test dev server, it also includes a package manager called npm that makes it very easy for use to install dependencies.
+
 * Open console
 
 ``` sh
 mkdir todo-pouch
 cd todo-pouch
 npm install bower -g
+```
+
+* What is bower?
+
+Bower is a client-side package management tool, we are going to use this tool
+to install jquery, bootstrap.css, angular, and pouchdb.  It works a lot like npm but places all of the packages in the components directory.  If you want to find out more about bower check out [http://bower.io/](http://bower.io/).
+
+``` sh
 bower init
 bower install jquery bootstrap.css angular --save
 bower install http://download.pouchdb.com/pouchdb-nightly.min.js --save
-touch index.html
 ```
 
-index.html
+### index.html
+
+Next, we are going to create an index.html document, which will be our default
+web document for this application.
+
+```
+touch index.html
+```
 
 ``` html
 <!doctype html>
 <html ng-app="Todo">
 <head>
   <title>TODO POUCH</title>
-  <link rel="stylesheet" href="/components/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/components/bootstrap.css/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/app.css"> 
 </head>
 <body>
   <div class="container">
-    <h1>TODO POUCH</h1>
     <ng-view></ng-view>
   </div>
   <script src="/components/jquery/jquery.js"></script>
   <script src="/components/angular/angular.js"></script>
-  <script src="/components/pouchdb-nightly.min/index.js"></script>
+  <script src="/components/pouchdb/index.js"></script>
+  <script src="/ng-app.js"></script>
+
 </body>
 </html>
 ```
-setup grunt
+
+### setup grunt
+
+Grunt is a build tool built in javascript, it allows you to create tasks that can be run to perform the `Grunt` work.  We will be installing the following tasks:
+
+* jshint
+* concat
+* uglify
+* connect
+
+These grunt tasks will enable us to run our dev environment using on cmd.
 
 ``` sh
 npm install grunt-cli -g
 npm init
 touch Gruntfile.js
-npm install grunt-contrib-concat grunt-contrib-jshint grunt-contrib-uglify grunt-contrib-watch --save-dev
+npm install grunt-contrib-concat grunt-contrib-jshint grunt-contrib-uglify grunt-contrib-connect grunt-contrib-watch --save-dev
+touch Gruntfile.js
 ```
 Paste the following js in Gruntfile.js
 
@@ -72,7 +110,7 @@ module.exports = function(grunt) {
       }
     },
     uglify: {
-      grxnet: {
+      app: {
         src: [ www + '/ng-app.js'],
         dest: www + '/ng-app.min.js'
       }
@@ -85,6 +123,14 @@ module.exports = function(grunt) {
           interrupt: true
         }
       }
+    },
+    connect: {
+      server: {
+        options: {
+          port: 3000,
+          base: '.'
+        }
+      }
     }
   });
 
@@ -92,20 +138,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
-  grunt.registerTask('default', 'jshint concat uglify');
-
+  grunt.registerTask('default', ['jshint', 'concat']);
+  grunt.registerTask('server', ['default', 'connect', 'watch']);
 }
-
 ```
 
-Install web server
-
-``` sh
-npm install w3 -g
-```
-
-create app directory
+### create angular app directory
 
 ``` sh
 mkdir app
@@ -116,7 +156,7 @@ mkdir app/templates
 touch app/templates/main.html
 ```
 
-open app/app.js and setup the application
+### open app/app.js and setup the application
 
 ```
 angular.module('Todo', [])
@@ -133,7 +173,7 @@ angular.module('Todo', [])
 ```
 
 In the app.js we are adding a config section, in this section we
-are injected two services.  ($routeProvider, $locationProvider).
+are injecting two services.  ($routeProvider, $locationProvider).
 
 $routeProvider gives the ability to do routing.
 
@@ -156,26 +196,16 @@ open app/templates/main.html
 
 Lets confirm we have everything setup correctly.
 
-Open two console windows
-
-console 1 - make sure you are in the project dir
+In the console (make sure you are in the project dir)
 
 ``` sh
-grunt concat
-grunt watch
+grunt server
 ```
-
-console 2 - make sure your in the project dir
-
-``` sh
-w3
-```
-
 open browser to http://localhost:3000
 
-If you see Todo Pouch in your browser, then we are setup correctly.
+If you see Todo Pouch in your browser, then we are setup correctly.  If not check the Chrome JavaScript console and see if you can see any errors.  Please submit in issue to this repo.
 
-# Exercise 1 - Create the declarative template
+## Exercise 1 - Create the declarative template
 
 We will step through the declarative template line by line.
 
@@ -195,15 +225,15 @@ Give the user the ability to remove all done tasks from the list.  Here we are u
 ``` html
 <ul class="unstyled">
   <li ng-repeat="todo in todos">
-    <input type="checkbox" ng-model="todo.done">
+    <input type="checkbox" ng-model="todo.done" ng-click="updateTodo(todo)">
     <span ng-class="{{done: todo.done">{{todo.text}}</span>
   </li>
 </ul>
 ```
 
-Create an unorded list of todo tasks, for each line item 
+Create an unordered list of todo tasks, for each line item 
 we want to provide a checkbox with an attribute `ng-model` assigned 
-to $scope.todo.done and map the input ng-click attribute to $scope.updateTodo(todo).
+to ``$scope.todo.done`` and map the input `ng-click` attribute to ``$scope.updateTodo(todo)`.
 
 Next we want to use the ng-class directive to add the `done` class to the span element if `todo.done === true`.  And use the ng-bind directive to show the todo task.
 
@@ -220,7 +250,7 @@ Finally, we want to add a form with a directive `ng-submit`, which is assigned t
 
 Open the browser and you should now see the total text and input form.
 
-# Exercise 2 - Controller
+## Exercise 2 - Controller
 
 Lets wire the view to the controller and models.
 
@@ -246,7 +276,7 @@ $scope.addTodo = function() {
 
 Add todo function
 
-# Exercise 3 
+## Exercise 3
 
 ``` js
 $scope.removeDone = function() {
@@ -271,7 +301,7 @@ $scope.removeDone = function() {
 Remove all items that are marked as done.
 
 
-# Exercise 4 
+## Exercise 4 
 
 ```
 $scope.remaining = function() {
@@ -286,7 +316,7 @@ $scope.remaining = function() {
 add the remaining function to the controller.  Now we should 
 see 0 of 0 remaining.
 
-# Exercise 5 - PouchDb
+## Exercise 5 - PouchDb
 
 - Create Pouch Service
 
@@ -318,7 +348,7 @@ with
 .controller('MainCtrl', function($scope, $pouch) {
 ```
 
-# Exercise 6 - Persist Todo List
+## Exercise 6 - Persist Todo List
 
 * On Add Todo save to pouch
 
@@ -339,7 +369,7 @@ $scope.addTodo = function() {
 };
 ```
 
-# Exercise 7 - Load Todo List
+## Exercise 7 - Load Todo List
 
 ``` js
 $pouch.allDocs({include_docs: true}, function(err, response) {
@@ -351,7 +381,7 @@ $pouch.allDocs({include_docs: true}, function(err, response) {
 });
 ```
 
-# Exercise 8 - Remove done tasks from list
+## Exercise 8 - Remove done tasks from list
 
 ``` js
 $scope.removeTodo = function(todo) {
@@ -360,7 +390,7 @@ $scope.removeTodo = function(todo) {
 
 ```
 
-# Exercise 9 - Update Todo List status
+## Exercise 9 - Update Todo List status
 
 ``` js
 $scope.updateTodo = function(todo) {
@@ -371,5 +401,9 @@ $scope.updateTodo = function(todo) {
 ## Finished
 
 Please provide feedback for improvement or if you enjoyed the exercise send me a tweet @twilson63
+
+## License
+
+MIT
 
 
