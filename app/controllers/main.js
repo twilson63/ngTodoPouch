@@ -1,9 +1,9 @@
 angular.module('Todo')
-  .controller('MainCtrl', function($scope, $pouch) {
+  .controller('MainCtrl', function($scope, $db) {
     'use strict';
     $scope.todos = [];
 
-    $pouch.allDocs({include_docs: true}, function(err, response) {
+    $db.allDocs({include_docs: true}, function(err, response) {
       $scope.$apply(function() {
         response.rows.forEach(function(row) {
           $scope.todos.push(row.doc);
@@ -19,7 +19,7 @@ angular.module('Todo')
       };
       $scope.todos.push(newTodo);
       $scope.todoText = '';
-      $pouch.post(newTodo, function(err, res) {
+      $db.post(newTodo, function(err, res) {
         if (err) { console.log(err); }
         newTodo._id = res.id;
         newTodo._rev = res.rev;
@@ -35,13 +35,9 @@ angular.module('Todo')
           $scope.todos.push(todo);
         }
         else {
-          $scope.removeTodo(todo);
+          $db.remove(todo);
         }
       });
-    };
-
-    $scope.removeTodo = function(todo) {
-      $pouch.remove(todo);
     };
 
     $scope.remaining = function() {
@@ -53,6 +49,6 @@ angular.module('Todo')
     };
 
     $scope.updateTodo = function(todo) {
-      $pouch.put(todo);
+      $db.put(todo);
     };
   });

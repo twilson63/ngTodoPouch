@@ -1,4 +1,4 @@
-angular.module('Todo', [])
+angular.module('Todo', ['angular-pouch'])
   .config(function($routeProvider, $locationProvider) {
     'use strict';
     

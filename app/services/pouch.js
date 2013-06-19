@@ -1,2 +1,4 @@
 angular.module('Todo')
-  .value('$pouch', Pouch('idb://todos'));
+  .factory('$db', function($pouch) {
+    return $pouch('idb://todos');
+  });
