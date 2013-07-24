@@ -285,22 +285,16 @@ Continuing through the wire up process, in Exercise 3 we will connect the declar
 
 ``` js
 $scope.removeDone = function() {
-  // backup array
-  var oldTodos = $scope.todos;
-  // reset to an empty array
-  $scope.todos = [];
-  // loop through the old values
-  angular.forEach(oldTodos, function(todo) {
-    // if todo is marked as done, or checked.
-    if (!todo.done) {
-      // add todo to the array
-      $scope.todos.push(todo);
-    }
-    else {
-      // remove todo from array
-      $scope.removeTodo(todo);
-    }
-  });
+   var allTodos = $scope.todos;
+   var remainingToDos = [];
+   // loop through the todos
+   angular.forEach(allTodos, function(todo) {
+      // if todo is marked as done, or checked.
+      if (!todo.done) {
+         remainingToDos.push(todo);
+      }
+   });
+   $scope.todos = remainingToDos;
 };
 ```
 
