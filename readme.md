@@ -51,17 +51,17 @@ touch index.html
 <html ng-app="Todo">
 <head>
   <title>TODO POUCH</title>
-  <link rel="stylesheet" href="/components/bootstrap.css/css/bootstrap.css">
+  <link rel="stylesheet" href="/bower_components/bootstrap.css/css/bootstrap.css">
   <link rel="stylesheet" href="/css/app.css"> 
 </head>
 <body>
   <div class="container">
     <ng-view></ng-view>
   </div>
-  <script src="/components/jquery/jquery.js"></script>
-  <script src="/components/angular/angular.js"></script>
-  <script src="/components/pouchdb-nightly.min/index.js"></script>
-  <script src="/components/angular-pouch/angular-pouch.js"></script>
+  <script src="/bower_components/jquery/jquery.js"></script>
+  <script src="/bower_components/angular/angular.js"></script>
+  <script src="/bower_components/pouchdb-nightly.min/index.js"></script>
+  <script src="/bower_components/angular-pouch/angular-pouch.js"></script>
   <script src="/ng-app.js"></script>
 
 </body>
@@ -279,7 +279,7 @@ $scope.addTodo = function() {
 };
 ```
 
-## Exercise 3
+## Exercise 3 - Remove completed todos
 
 Continuing through the wire up process, in Exercise 3 we will connect the declaration of removeDone to a function.  In this function, we will create a copy of the current todo list and loop through the copy and remove any of the items that are marked as done, then add the items still in play to the new array.
 
@@ -298,7 +298,7 @@ $scope.removeDone = function() {
 };
 ```
 
-## Exercise 4 
+## Exercise 4 - Display remaining todo count
 
 Finally, we will connect the remaining declaration to a function that will provide an uptodate and accurate count of the Todo Item List.
 
@@ -440,4 +440,15 @@ Please provide feedback for improvement or if you enjoyed the exercise send me a
 
 MIT
 
+## Thank you
 
+* AngularJS Team
+* PouchDb Team
+* NodeJS Team
+* Grunt Team
+* Bower Team
+
+## Contributors
+
+* https://github.com/twilson63
+* https://github.com/daraghking
