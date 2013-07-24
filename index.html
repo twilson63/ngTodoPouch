@@ -91,17 +91,17 @@ web document for this application.</p>
 <span class="nt">&lt;html</span> <span class="na">ng-app=</span><span class="s">"Todo"</span><span class="nt">&gt;</span>
 <span class="nt">&lt;head&gt;</span>
   <span class="nt">&lt;title&gt;</span>TODO POUCH<span class="nt">&lt;/title&gt;</span>
-  <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"/components/bootstrap.css/css/bootstrap.css"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"/bower_components/bootstrap.css/css/bootstrap.css"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"/css/app.css"</span><span class="nt">&gt;</span> 
 <span class="nt">&lt;/head&gt;</span>
 <span class="nt">&lt;body&gt;</span>
   <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;ng</span><span class="na">-view</span><span class="nt">&gt;</span><span class="err">&lt;</span>/ng-view&gt;
   <span class="nt">&lt;/div&gt;</span>
-  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/jquery/jquery.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/angular/angular.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/pouchdb-nightly.min/index.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/components/angular-pouch/angular-pouch.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/bower_components/jquery/jquery.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/bower_components/angular/angular.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/bower_components/pouchdb-nightly.min/index.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/bower_components/angular-pouch/angular-pouch.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
   <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/ng-app.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 
 <span class="nt">&lt;/body&gt;</span>
@@ -313,32 +313,26 @@ to <code>$scope.todo.done</code> and map the input <code>ng-click</code> attribu
 </pre></div>
 
 <h2>
-<a name="exercise-3" class="anchor" href="#exercise-3"><span class="octicon octicon-link"></span></a>Exercise 3</h2>
+<a name="exercise-3---remove-completed-todos" class="anchor" href="#exercise-3---remove-completed-todos"><span class="octicon octicon-link"></span></a>Exercise 3 - Remove completed todos</h2>
 
 <p>Continuing through the wire up process, in Exercise 3 we will connect the declaration of removeDone to a function.  In this function, we will create a copy of the current todo list and loop through the copy and remove any of the items that are marked as done, then add the items still in play to the new array.</p>
 
 <div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">removeDone</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// backup array</span>
-  <span class="kd">var</span> <span class="nx">oldTodos</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">;</span>
-  <span class="c1">// reset to an empty array</span>
-  <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span> <span class="o">=</span> <span class="p">[];</span>
-  <span class="c1">// loop through the old values</span>
-  <span class="nx">angular</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">oldTodos</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// if todo is marked as done, or checked.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">todo</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
-      <span class="c1">// add todo to the array</span>
-      <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="p">{</span>
-      <span class="c1">// remove todo from array</span>
-      <span class="nx">$scope</span><span class="p">.</span><span class="nx">removeTodo</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">});</span>
+   <span class="kd">var</span> <span class="nx">allTodos</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span><span class="p">;</span>
+   <span class="kd">var</span> <span class="nx">remainingToDos</span> <span class="o">=</span> <span class="p">[];</span>
+   <span class="c1">// loop through the todos</span>
+   <span class="nx">angular</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">allTodos</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// if todo is marked as done, or checked.</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">todo</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+         <span class="nx">remainingToDos</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
+      <span class="p">}</span>
+   <span class="p">});</span>
+   <span class="nx">$scope</span><span class="p">.</span><span class="nx">todos</span> <span class="o">=</span> <span class="nx">remainingToDos</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 
 <h2>
-<a name="exercise-4" class="anchor" href="#exercise-4"><span class="octicon octicon-link"></span></a>Exercise 4</h2>
+<a name="exercise-4---display-remaining-todo-count" class="anchor" href="#exercise-4---display-remaining-todo-count"><span class="octicon octicon-link"></span></a>Exercise 4 - Display remaining todo count</h2>
 
 <p>Finally, we will connect the remaining declaration to a function that will provide an uptodate and accurate count of the Todo Item List.</p>
 
@@ -476,13 +470,40 @@ persisted todo from the pouch database.</p>
 <a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>MIT</p>
+
+<h2>
+<a name="thank-you" class="anchor" href="#thank-you"><span class="octicon octicon-link"></span></a>Thank you</h2>
+
+<ul>
+<li>AngularJS Team</li>
+<li>PouchDb Team</li>
+<li>NodeJS Team</li>
+<li>Grunt Team</li>
+<li>Bower Team</li>
+</ul><h2>
+<a name="contributors" class="anchor" href="#contributors"><span class="octicon octicon-link"></span></a>Contributors</h2>
+
+<ul>
+<li><a href="https://github.com/twilson63">https://github.com/twilson63</a></li>
+<li><a href="https://github.com/daraghking">https://github.com/daraghking</a></li>
+</ul>
       </section>
       <footer>
         <p>Project maintained by <a href="https://github.com/twilson63">twilson63</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
       </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-9459466-4");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
