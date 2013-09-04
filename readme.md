@@ -68,6 +68,21 @@ touch index.html
 </html>
 ```
 
+### app.css
+
+Create a style that will be applied to the todo items that are done.
+
+```
+touch css/app.css
+```
+
+``` css
+.done {
+  text-decoration: line-through;
+  color: grey;
+}
+```
+
 ### setup grunt
 
 Grunt is a build tool built in javascript, it allows you to create tasks that can be run to perform the `Grunt` work.  We will be installing the following tasks:
@@ -229,7 +244,7 @@ Give the user the ability to remove all done tasks from the list.  Here we are u
 <ul class="unstyled">
   <li ng-repeat="todo in todos">
     <input type="checkbox" ng-model="todo.done" ng-click="updateTodo(todo)">
-    <span ng-class="{{done: todo.done">{{todo.text}}</span>
+    <span ng-class="{done: todo.done}">{{todo.text}}</span>
   </li>
 </ul>
 ```
@@ -270,7 +285,7 @@ Second, we need to create the addTodo function.
 ```js
 $scope.addTodo = function() {
   var newTodo = {
-    _id: Math.uuid(),
+    _id: PouchDB.uuid(),
     text: $scope.todoText,
     done: false
   };
@@ -371,7 +386,7 @@ the addTodo function.
 ``` js
 $scope.addTodo = function() {
   var newTodo = {
-    _id: Math.uuid(),
+    _id: PouchDB.uuid(),
     text: $scope.todoText,
     done: false
   };
