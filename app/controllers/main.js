@@ -13,7 +13,7 @@ angular.module('Todo')
 
     $scope.addTodo = function() {
       var newTodo = {
-        _id: Math.uuid(),
+        _id: PouchDB.uuid(),
         text: $scope.todoText,
         done: false
       };
