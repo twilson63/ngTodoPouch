@@ -2,6 +2,23 @@ var test = require('tap').test;
 var listNewCtrl = require('./list-new-controller');
 
 test('success', function (t) {
-
-  t.end();
+  var scope = {};
+  var db = {
+    $put: function(doc) {
+      t.equals(doc.name, 'foo');
+      return {
+        then: function(fn) {
+          fn({ok: true});
+        }
+      }
+    }
+  };
+  var state = {
+    go: function(name) {
+      t.equals(name, 'lists.index');
+      t.end();
+    }
+  }
+  listNewCtrl(scope, db, state);
+  scope.save({name: 'foo'});
 });
