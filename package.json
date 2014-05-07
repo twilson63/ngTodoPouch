@@ -1,21 +1,38 @@
 {
   "name": "todo-pouch",
   "version": "0.0.0",
-  "description": "An AngularJS Tutorial that will walk you through creating a ToDo Application using a local PouchDb.",
-  "main": "index.js",
+  "description": "An AngularJS-Atomify-PouchDb Tutorial",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "atomify -d",
+    "start": "node server.js",
+    "test": "tap app/**/*_test.js",
+    "dev": "npm run watch & npm start"
   },
   "repository": "",
   "author": "",
-  "license": "BSD",
   "readmeFilename": "readme.md",
   "devDependencies": {
-    "grunt-contrib-watch": "~0.3.1",
-    "grunt-contrib-uglify": "~0.2.0",
-    "grunt": "~0.4.1",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-jshint": "~0.4.3",
-    "grunt-contrib-connect": "~0.3.0"
+    "tap": "^0.4.9",
+    "handlebars": "^1.3.0",
+    "hbsfy": "^1.3.2",
+    "atomify": "^1.5.0-beta7",
+    "nodemon": "^1.0.17",
+    "supertest": "^0.12.0"
+  },
+  "dependencies": {
+    "express": "^4.1.1",
+    "nano": "^5.8.0",
+    "pouchdb": "^2.2.0"
+  },
+  "atomify": {
+    "js": {
+      "entry": "app/index.js",
+      "output": "www/bundle.js",
+      "watch": true
+    },
+    "css": {
+      "entry": "app/index.css",
+      "output": "www/bundle.css"
+    }
   }
 }

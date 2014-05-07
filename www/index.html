@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html ng-app="TodoApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Todo App</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bundle.css">
+  </head>
+  <body>
+    <div ng-controller="ApplicationCtrl">
+      <nav class="navbar navbar-default">
+        <div class='container'>
+          <a class="navbar-brand" ui-sref="home">{{title}}</a>
+        </div>
+      </nav>
+      <div ui-view></div>
+    </div>
+    <script src="/bundle.js"></script>
+  </body>
+</html>

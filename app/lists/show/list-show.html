@@ -1,0 +1,12 @@
+<div class="container">
+  <h2>{{list.name}}</h2>
+  <p>{{list.description}}</p>
+  <ul class="list">
+    <li class="list-item" ng-repeat="task in list">
+      <div class="checkbox">
+        <input class="" type="checkbox">
+        {{task.name}}
+      </div>
+    </li>
+  </ul>
+</div>

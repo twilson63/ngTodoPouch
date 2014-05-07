@@ -1,0 +1,17 @@
+<div class="container">
+  <div class="pull-right">
+    <a class="btn btn-default" ui-sref="list.new">New List</a>
+  </div>
+  <h2>Todo Lists</h2>
+  <div>
+    <a 
+      class="list-item" 
+      ui-sref="show(list)" 
+      ng-repeat="list in lists">
+      <span class="badge badge-default pull-right">
+        {{list.tasks.length}} Tasks
+      </span>
+      {{list.name}}
+    </a>
+  </div>
+</div>
