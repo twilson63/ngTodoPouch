@@ -12,6 +12,7 @@ module.exports = function($db) {
       return $db.post(doc);
     },
     $put: function (doc) {
+
       return $db.put(doc);
     },
     $get: function (id) {

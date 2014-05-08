@@ -1,5 +1,8 @@
 <div class="container">
   <div class="pull-right">
+    <button class="btn btn-warning" ng-click="rmDone(list)">
+      Archive Completed Tasks
+    </button>
     <button class="btn btn-default" ng-click="save(list)">
       Save
     </button>
@@ -11,11 +14,13 @@
       <input class="form-control" placeholder="Add Task and Press Enter" ng-model="task.description">
     </div>
   </form>
-  <ul class="list">
-    <li class="list-item" ng-repeat="task in list.tasks">
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="task in list.tasks | orderBy:'done':false">
       <div class="checkbox">
-        <input class="" type="checkbox">
-        {{task.description}}
+        <label>
+          <input class="" type="checkbox" ng-model="task.done">
+          {{task.description}}
+        </label>
       </div>
     </li>
   </ul>

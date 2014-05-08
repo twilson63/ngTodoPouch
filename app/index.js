@@ -11,4 +11,5 @@ angular.module('TodoApp', ['ui.router',
 .factory('$db', function() {
   return require('pouchdb')('myTodos');
 })
+.constant('$us', require('underscore'))
 ;
