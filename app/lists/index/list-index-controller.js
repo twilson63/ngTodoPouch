@@ -1,3 +1,9 @@
 module.exports = function ($scope, $todoSvc) {
-  $scope.lists = $todoSvc.$all();
+  $todoSvc.$all(function(err, res) {
+    $scope.$apply(function() {
+      $scope.lists = res.rows.map(function(row) {
+        return row.value;
+      });
+    });
+  });
 };

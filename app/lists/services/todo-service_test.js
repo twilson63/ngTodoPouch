@@ -4,7 +4,7 @@ var todoSvc = require('./todo-service');
 test('return all promist', function (t) {
   var db = mockPouch();
   var svc = todoSvc(db);
-  svc.$all().then(function(lists) {
+  svc.$all(function(lists) {
     t.equals(lists.length, 2);
     t.end();
   });
@@ -44,12 +44,8 @@ function mockPouch () {
         }
       }
     },
-    query: function (view) {
-      return {
-        then: function(fn) {
-          fn([1,2]);
-        }
-      }
+    query: function (view, cb) {
+      cb([1,2]);
     }
   };
 }
