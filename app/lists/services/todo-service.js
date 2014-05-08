@@ -17,6 +17,9 @@ module.exports = function($db) {
     },
     $get: function (id) {
       return $db.get(id);
+    },
+    $remove: function(doc) {
+      return $db.remove(doc);
     }
   };
 };

@@ -7,7 +7,10 @@
       Save
     </button>
   </div>
-  <h2>{{list.name}}</h2>
+  <h2>
+    {{list.name}}
+    <span class="glyphicon glyphicon-trashglyphicon glyphicon-trash" style="font-size: .5em;" ng-click="rmList(list)"></span>
+  </h2>
   <p>{{list.description}}</p>
   <form class="form-horizontal" novalidate ng-submit="add(task)">
     <div class="form-group">
@@ -16,6 +19,9 @@
   </form>
   <ul class="list-group">
     <li class="list-group-item" ng-repeat="task in list.tasks | orderBy:'done':false">
+      <div class="pull-right">
+        <i class="glyphicon glyphicon-trashglyphicon glyphicon-trash" ng-click="rmTask(task)"></i>
+      </div>
       <div class="checkbox">
         <label>
           <input class="" type="checkbox" ng-model="task.done">

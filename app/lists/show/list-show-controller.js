@@ -1,5 +1,5 @@
 module.exports = function ($scope, $todoSvc,
-  $stateParams, $state, $us) {
+  $stateParams, $state, $us, $window) {
   $todoSvc.$get($stateParams.id).then(function(doc) {
     $scope.$apply(function() {
       $scope.list = doc;
@@ -24,4 +24,19 @@ module.exports = function ($scope, $todoSvc,
     if (!$scope.list.completed) { $scope.list.completed = []; }
     $scope.list.completed = $us.union(result[0], $scope.list.completed);
   };
+
+  $scope.rmTask = function(task) {
+    $scope.list.tasks = $us($scope.list.tasks).without(task);
+  };
+
+  $scope.rmList = function(list) {
+    if ($window.confirm('Are you sure?')) {
+      $todoSvc.$remove(list).then(function(res) {
+        $scope.$apply(function() {
+          $state.go('lists.index');
+        });
+      });
+    }
+  }
+
 };
