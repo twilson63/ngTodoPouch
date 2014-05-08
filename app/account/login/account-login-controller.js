@@ -1,5 +1,8 @@
-module.exports = function ($scope) {
+module.exports = function ($scope, $accountSvc) {
   $scope.login = function (user) {
-    alert('TODO: Login User');
-  }
+    $accountSvc.$login(user).then(function (info) {
+      alert('Successfully Logged In!');
+      $scope.$emit('account:loggedIn', info);
+    });
+  };
 };
