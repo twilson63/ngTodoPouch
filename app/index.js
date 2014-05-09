@@ -13,7 +13,7 @@ angular.module('TodoApp', ['ui.router',
   return require('pouchdb')('myTodos');
 })
 .constant('$us', require('underscore'))
-.constant('$origin', function($window) {
+.factory('$origin', function($window) {
   return $window.location.origin;
 })
 .factory('$set', function($window) {
