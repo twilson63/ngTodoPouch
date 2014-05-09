@@ -1,6 +1,6 @@
 {
   "name": "todo-pouch",
-  "version": "0.0.0",
+  "version": "0.0.0-1",
   "description": "An AngularJS-Atomify-PouchDb Tutorial",
   "scripts": {
     "watch": "atomify -d",
@@ -43,5 +43,6 @@
   "engines": {
     "node": "0.10.x",
     "npm": "1.4.x"
-  }
+  },
+  "subdomain": "todolists"
 }

@@ -24,7 +24,9 @@ app.use('/db', function (req, res) {
 
 app.get('/session/:name', function (req, res) {
   if (!cookies[req.params.name]) { return res.send(401); }
-  res.send(200);
+  request(userUrl + '/_session', { headers: { 'Cookie': cookies[req.params.name][0]}})
+  .pipe(res);
+  //res.send(200);
 });
 
 app.use('/api', bodyParser());

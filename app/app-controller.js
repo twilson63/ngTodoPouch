@@ -31,4 +31,12 @@ module.exports = function ($scope, $state, $db, $http, $window) {
     $scope.user = null;
     $state.go('splash');
   };
+
+  $db.changes({
+    since: 'latest',
+    live: true
+  }).on('change', function (change) {
+    $scope.$broadcast('database:changed', change);
+  });
+
 };

@@ -1,10 +1,15 @@
 module.exports = function ($scope, $todoSvc,
   $stateParams, $state, $us, $window) {
-  $todoSvc.$get($stateParams.id).then(function(doc) {
-    $scope.$apply(function() {
-      $scope.list = doc;
+  var get = function(id) {
+    $todoSvc.$get(id).then(function(doc) {
+      $scope.$apply(function() {
+        $scope.list = doc;
+      });
     });
-  });
+  };
+
+  get($stateParams.id);
+
   $scope.add = function (task) {
     if (!$scope.list.tasks) { $scope.list.tasks = []; }
     $scope.list.tasks.push({ description: task.description});
@@ -38,5 +43,11 @@ module.exports = function ($scope, $todoSvc,
       });
     }
   }
+
+  $scope.$on('database:changed', function(e, change) {
+    if (change.id === $scope.list._id) {
+      get(change.id);
+    }
+  });
 
 };
