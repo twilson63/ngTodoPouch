@@ -26,7 +26,8 @@
     "underscore": "^1.6.0",
     "body-parser": "^1.0.2",
     "async": "^0.8.0",
-    "request": "^2.34.0"
+    "request": "^2.34.0",
+    "morgan": "^1.0.1"
   },
   "atomify": {
     "js": {
@@ -38,5 +39,9 @@
       "entry": "app/index.css",
       "output": "www/bundle.css"
     }
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.4.x"
   }
 }

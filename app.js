@@ -1,8 +1,13 @@
 var adminUrl = process.env.ADMIN_URL || 'http://admin:admin@localhost:5984';
 var userUrl = process.env.USER_URL || 'http://localhost:5984';
 
+console.log(adminUrl);
+console.log(userUrl);
+
 var express = require('express');
+var morgan = require('morgan');
 var app = express();
+app.use(morgan());
 var bodyParser = require('body-parser');
 var nano = require('nano')(adminUrl);
 var async = require('async');
