@@ -25,7 +25,8 @@
     "pouchdb": "^2.2.0",
     "underscore": "^1.6.0",
     "body-parser": "^1.0.2",
-    "async": "^0.8.0"
+    "async": "^0.8.0",
+    "request": "^2.34.0"
   },
   "atomify": {
     "js": {
