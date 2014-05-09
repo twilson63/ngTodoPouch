@@ -1,9 +1,6 @@
 var adminUrl = process.env.ADMIN_URL || 'http://admin:admin@localhost:5984';
 var userUrl = process.env.USER_URL || 'http://localhost:5984';
 
-console.log(adminUrl);
-console.log(userUrl);
-
 var express = require('express');
 var morgan = require('morgan');
 var app = express();
@@ -18,15 +15,17 @@ var cookies = {};
 
 // TODO - maybe nice to only support replication...
 app.use('/db', function (req, res) {
+
   var name = req.url.split('/')[1];
   var db_url = userUrl + req.url;
   req.pipe(request[req.method.toLowerCase()](db_url,
-    {headers: { cookie: cookies[name]}})).pipe(res);
+    {headers: cookies[name][0]})).pipe(res);
 });
 
 app.get('/session/:name', function (req, res) {
+  if (!cookies[req.params.name]) { return res.send(401); }
   request
-    .get(userUrl + '/_session', { headers: { cookie: cookies[req.params.name]}})
+    .get(userUrl + '/_session', { headers: cookies[req.params.name][0] })
     .pipe(res);
 });
 
