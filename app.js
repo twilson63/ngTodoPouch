@@ -15,18 +15,16 @@ var cookies = {};
 
 // TODO - maybe nice to only support replication...
 app.use('/db', function (req, res) {
-
   var name = req.url.split('/')[1];
+  if (!cookies[name]) { return res.send(401); }
   var db_url = userUrl + req.url;
   req.pipe(request[req.method.toLowerCase()](db_url,
-    {headers: cookies[name][0]})).pipe(res);
+    {headers: { 'Cookie': cookies[name][0]}})).pipe(res);
 });
 
 app.get('/session/:name', function (req, res) {
   if (!cookies[req.params.name]) { return res.send(401); }
-  request
-    .get(userUrl + '/_session', { headers: cookies[req.params.name][0] })
-    .pipe(res);
+  res.send(200);
 });
 
 app.use('/api', bodyParser());
@@ -57,8 +55,9 @@ app.post('/api/register', function (req, res) {
 app.post('/api/login', function( req, res) {
   nano.auth(req.body.name, req.body.password, function (e,b,headers) {
     if (e) { console.log(e); return res.send(500); }
+    console.log(headers);
     if (headers && headers['set-cookie']) { cookies[req.body.name] = headers['set-cookie']; }
-    res.send(200, {name: req.body.name} );
+    res.send(200, {name: req.body.name});
   });
 });
 

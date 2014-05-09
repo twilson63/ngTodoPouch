@@ -2,13 +2,14 @@
 module.exports = function ($scope, $state, $db, $http, $window) {
   var session = function(e, user) {
     $scope.user = user;
-    console.log($window.location.origin);
     // store current username
     $window.localStorage.setItem('user', user.name);
     var opts = { live: true };
     var remoteDb = $window.location.origin + '/db/' + user.name;
-    $db.replicate.to(remoteDb, opts);
-    $db.replicate.from(remoteDb, opts);
+    $db.sync(remoteDb, opts);
+
+    //$db.replicate.to(remoteDb, opts);
+    //$db.replicate.from(remoteDb, opts);
     $state.go('lists.index');
   };
 
@@ -17,7 +18,7 @@ module.exports = function ($scope, $state, $db, $http, $window) {
   if (user) {
     $http.get('/session/' + user).then(function(res) {
       session(null, {name: user});
-    });
+    }, function() { $state.go('splash'); });
   }
 
   $scope.title = 'TODO App';

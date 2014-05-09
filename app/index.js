@@ -9,6 +9,7 @@ angular.module('TodoApp', ['ui.router',
 .config(require('./app-config'))
 .controller('ApplicationCtrl', require('./app-controller'))
 .factory('$db', function() {
+  //var url = $window.location.origin + '/db/' + $window.localStorage.getItem('user');
   return require('pouchdb')('myTodos');
 })
 .constant('$us', require('underscore'))
