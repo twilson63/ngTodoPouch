@@ -1,5 +1,5 @@
 module.exports = function ($scope, $todoSvc,
-  $stateParams, $state, $us, $window) {
+  $stateParams, $state, $us) {
   var get = function(id) {
     $todoSvc.$get(id).then(function(doc) {
       $scope.$apply(function() {

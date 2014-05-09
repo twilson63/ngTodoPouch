@@ -1,11 +1,13 @@
 var test = require('tap').test;
 var listNewCtrl = require('./list-show-controller');
+var _ = require('underscore');
 
 test('success', function (t) {
   var scope = {
     $apply: function (fn) {
       fn.call(scope);
-    }
+    },
+    $on: function () {}
   };
   var todoSvc = {
     $get: function (id) {
@@ -31,7 +33,8 @@ test('success', function (t) {
       t.end();
     }
   };
-  listNewCtrl(scope, todoSvc, stateParams, state);
+
+  listNewCtrl(scope, todoSvc, stateParams, state, _);
   //console.log(scope);
   scope.add({description: 'Task1'});
   scope.save(scope.list);

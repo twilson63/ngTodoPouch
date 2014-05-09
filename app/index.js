@@ -13,4 +13,16 @@ angular.module('TodoApp', ['ui.router',
   return require('pouchdb')('myTodos');
 })
 .constant('$us', require('underscore'))
+.constant('$origin', function($window) {
+  return $window.location.origin;
+})
+.factory('$set', function($window) {
+  return function (key, value) {
+    $window.localStorage.setItem(key, value);
+  };
+})
+.factory('$user', function ($window) {
+  return $window.localStorage.getItem('user');
+})
+
 ;

@@ -1,4 +1,4 @@
-module.exports = function ($scope, $todoSvc, $timeout) {
+module.exports = function ($scope, $todoSvc) {
   var loadList = function() {
     $todoSvc.$all(function(err, res) {
       $scope.$apply(function() {
