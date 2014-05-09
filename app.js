@@ -1,31 +1,41 @@
+var adminUrl = process.env.ADMIN_URL || 'http://admin:admin@localhost:5984';
+var userUrl = process.env.USER_URL || 'http://localhost:5984';
+
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-var nano = require('nano')('http://admin:admin@localhost:5984');
+var nano = require('nano')(adminUrl);
 var async = require('async');
 var request = require('request');
 
+// TODO this should be a redis session
 var cookies = {};
 
+// TODO - maybe nice to only support replication...
 app.use('/db', function (req, res) {
   var name = req.url.split('/')[1];
-  var db_url = 'http://localhost:5984' + req.url;
+  var db_url = userUrl + req.url;
   req.pipe(request[req.method.toLowerCase()](db_url,
     {headers: { cookie: cookies[name]}})).pipe(res);
 });
 
-app.use(bodyParser());
-
-app.get('/api/session/:name', function (req, res) {
+app.get('/session/:name', function (req, res) {
   request
-    .get('http://localhost:5984/_session', { headers: { cookie: cookies[req.params.name]}})
+    .get(userUrl + '/_session', { headers: { cookie: cookies[req.params.name]}})
     .pipe(res);
 });
 
+app.use('/api', bodyParser());
+
 app.post('/api/register', function (req, res) {
+  // default user document attributes
   req.body.type = 'user';
   req.body.roles = ['account'];
-  var security = { admins: { roles: [], names: []}, members: { roles: ['admins'], names: [req.body.name]}};
+  // default security document
+  var security = {
+    admins: { roles: [], names: []},
+    members: { roles: ['admins'], names: [req.body.name]}
+  };
   var userdb = nano.use('_users');
   async.series([
     function (cb) { userdb.insert(req.body, 'org.couchdb.user:' + req.body.name, cb); },
