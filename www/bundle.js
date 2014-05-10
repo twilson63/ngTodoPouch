@@ -12,15 +12,34 @@ module.exports = function($stateProvider) {
       controller: ['$scope', '$accountSvc',
         require('./register/account-register-controller')],
       template: require('./register/account-register.html')
+    })
+    .state('forgot', {
+      url: '/forgot',
+      controller: ['$scope', '$accountSvc',
+        require('./forgot/account-forgot-controller')],
+      template: require('./forgot/account-forgot.html')
+    })
+    .state('reset', {
+      url: '/reset',
+      controller: ['$scope', '$accountSvc',
+        require('./reset/account-reset-controller')],
+      template: require('./reset/account-reset.html')
     });
 };
 
-},{"./login/account-login-controller":3,"./login/account-login.html":4,"./register/account-register-controller":5,"./register/account-register.html":6}],2:[function(require,module,exports){
+},{"./forgot/account-forgot-controller":2,"./forgot/account-forgot.html":3,"./login/account-login-controller":5,"./login/account-login.html":6,"./register/account-register-controller":7,"./register/account-register.html":8,"./reset/account-reset-controller":9,"./reset/account-reset.html":10}],2:[function(require,module,exports){
+module.exports = function($scope) {
+  
+}
+
+},{}],3:[function(require,module,exports){
+module.exports = '<div class="container">\n<h2>Forgot Password</h2>\n<form novalidate ng-submit="forgot(user)">\n  <div class="form-group">\n    <label>Email</label>\n    <input class="form-control" ng-model="user.email">\n  </div>\n  <div class="form-group">\n    <button class="btn btn-default">Submit</button>\n  </div>\n</form>\n</div>\n';
+},{}],4:[function(require,module,exports){
 module.exports = angular.module('account', [])
   .config(['$stateProvider', require('./account-config')])
   .factory('$accountSvc', ['$http', require('./services/account-service')]);
 
-},{"./account-config":1,"./services/account-service":7}],3:[function(require,module,exports){
+},{"./account-config":1,"./services/account-service":11}],5:[function(require,module,exports){
 module.exports = function ($scope, $accountSvc) {
   $scope.login = function (user) {
     $accountSvc.$login(user).then(function (info) {
@@ -30,9 +49,9 @@ module.exports = function ($scope, $accountSvc) {
   };
 };
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = '<div class="container">\n<form novalidate ng-submit="login(user)">\n  <div class="form-group">\n    <label>Username</label>\n    <input class="form-control" ng-model="user.name">\n  </div>\n  <div class="form-group">\n    <label>Password</label>\n    <input class="form-control" type="password" ng-model="user.password">\n  </div>\n  <div class="form-group">\n    <button class="btn btn-default">Login</button>\n  </div>\n</form>\n</div>\n';
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = function ($scope, $accountSvc) {
   $scope.register = function(user) {
     $accountSvc.$register(user).then(function(info) {
@@ -43,9 +62,13 @@ module.exports = function ($scope, $accountSvc) {
   };
 };
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = '<div class="container">\n<form novalidate ng-submit="register(user)">\n  <div class="form-group">\n    <label>Username</label>\n    <input class="form-control" ng-model="user.name">\n  </div>\n  <div class="form-group">\n    <label>Email</label>\n    <input class="form-control" type="email" ng-model="user.email">\n  </div>\n  <div class="form-group">\n    <label>Password</label>\n    <input class="form-control" type="password" ng-model="user.password">\n  </div>\n  <div class="form-group">\n    <label>Confirm Password</label>\n    <input class="form-control" type="password" ng-model="confirm">\n  </div>\n  <div class="form-group">\n    <button class="btn btn-default">Register</button>\n  </div>\n</form>\n</div>\n';
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
+module.exports=require(2)
+},{}],10:[function(require,module,exports){
+module.exports = '<div class="container">\n<h2>Forgot Password</h2>\n<form novalidate ng-submit="reset(user)">\n  <div class="form-group">\n    <label>Reset Code</label>\n    <input class="form-control" ng-model="user.reset">\n  </div>\n  <div class="form-group">\n    <button class="btn btn-default">Submit</button>\n  </div>\n</form>\n</div>\n';
+},{}],11:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     $register: function(user) {
@@ -57,12 +80,12 @@ module.exports = function ($http) {
   }
 }
 
-},{}],8:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = function ($urlRouterProvider) {
   $urlRouterProvider.otherwise('/');
 };
 
-},{}],9:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 // Application Controller
 module.exports = function ($scope, $state, $db,
   $http, $user, $set, $origin) {
@@ -103,7 +126,7 @@ module.exports = function ($scope, $state, $db,
 
 };
 
-},{}],10:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 angular.module('TodoApp', ['ui.router',
   require('./splash').name,
   require('./account').name,
@@ -129,12 +152,12 @@ angular.module('TodoApp', ['ui.router',
   return $window.localStorage.getItem('user');
 }]);
 
-},{"./account":2,"./app-config":8,"./app-controller":9,"./lists":11,"./splash":21,"underscore":22}],11:[function(require,module,exports){
+},{"./account":4,"./app-config":12,"./app-controller":13,"./lists":15,"./splash":25,"underscore":26}],15:[function(require,module,exports){
 module.exports = angular.module('lists', [])
   .config(['$stateProvider', require('./list-config')])
   .factory('$todoSvc', ['$db', require('./services/todo-service')]);
 
-},{"./list-config":14,"./services/todo-service":17}],12:[function(require,module,exports){
+},{"./list-config":18,"./services/todo-service":21}],16:[function(require,module,exports){
 module.exports = function ($scope, $todoSvc) {
   var loadList = function() {
     $todoSvc.$all(function(err, res) {
@@ -152,9 +175,9 @@ module.exports = function ($scope, $todoSvc) {
   loadList();
 };
 
-},{}],13:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = '<div class="container">\n  <div class="pull-right">\n    <a class="btn btn-default" ui-sref="lists.new">New List</a>\n  </div>\n  <h2>Todo Lists</h2>\n  <div class="list-group">\n    <a\n      class="list-group-item"\n      ui-sref="lists.show({ id: list._id})"\n      ng-repeat="list in lists">\n      <span class="badge badge-default pull-right">\n        {{list.tasks.length}} Tasks\n      </span>\n      {{list.name}}\n    </a>\n  </div>\n</div>\n';
-},{}],14:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = function ($stateProvider) {
   $stateProvider
     .state('lists', {
@@ -183,7 +206,7 @@ module.exports = function ($stateProvider) {
     });
 };
 
-},{"./index/list-index-controller":12,"./index/list-index.html":13,"./new/list-new-controller":15,"./new/list-new.html":16,"./show/list-show-controller":18,"./show/list-show.html":19}],15:[function(require,module,exports){
+},{"./index/list-index-controller":16,"./index/list-index.html":17,"./new/list-new-controller":19,"./new/list-new.html":20,"./show/list-show-controller":22,"./show/list-show.html":23}],19:[function(require,module,exports){
 module.exports = function ($scope, $todoSvc, $state) {
   $scope.save = function (todolist) {
     $todoSvc.$post(todolist)
@@ -197,9 +220,9 @@ module.exports = function ($scope, $todoSvc, $state) {
   };
 };
 
-},{}],16:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = '<div class="container">\n  <h2>New List</h2>\n  <form novalidate ng-submit="save(list)">\n    <div class="form-group">\n      <label>Name</label>\n      <input class="form-control" ng-model="list.name">\n    </div>\n    <div class="form-group">\n      <label>Description</label>\n      <input class="form-control" ng-model="list.description">\n    </div>\n    <div class="form-group">\n      <label>Tags</label>\n      <input class="form-control" ng-model="list.tags">\n    </div>\n    <div class="form-group">\n      <button class="btn btn-default">Save</button>\n    </div>\n  </form>\n</div>\n';
-},{}],17:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = function($db) {
   return {
     $all: function (cb) {
@@ -226,7 +249,7 @@ module.exports = function($db) {
   };
 };
 
-},{}],18:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = function ($scope, $todoSvc,
   $stateParams, $state, $us, $window) {
   var get = function(id) {
@@ -281,11 +304,11 @@ module.exports = function ($scope, $todoSvc,
 
 };
 
-},{}],19:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = '<div class="container">\n  <div class="pull-right">\n    <button class="btn btn-warning" ng-click="rmDone(list)">\n      Archive Completed Tasks\n    </button>\n    <button class="btn btn-default" ng-click="save(list)">\n      Save\n    </button>\n  </div>\n  <h2>\n    {{list.name}}\n    <span class="glyphicon glyphicon-trashglyphicon glyphicon-trash" style="font-size: .5em;" ng-click="rmList(list)"></span>\n  </h2>\n  <p>{{list.description}}</p>\n  <form class="form-horizontal" novalidate ng-submit="add(task)">\n    <div class="form-group">\n      <input class="form-control" placeholder="Add Task and Press Enter" ng-model="task.description">\n    </div>\n  </form>\n  <ul class="list-group">\n    <li class="list-group-item" ng-repeat="task in list.tasks | orderBy:\'done\':false">\n      <div class="pull-right">\n        <i class="glyphicon glyphicon-trashglyphicon glyphicon-trash" ng-click="rmTask(task)"></i>\n      </div>\n      <div class="checkbox">\n        <label>\n          <input class="" type="checkbox" ng-model="task.done">\n          {{task.description}}\n        </label>\n      </div>\n    </li>\n  </ul>\n</div>\n';
-},{}],20:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = '<div class="jumbotron">\n  <div class="container">\n    <h1>Ultimate Task List</h1>\n  </div>\n</div>\n<div class="container">\n  <p>Welcome to the ultimate todo list application, it works offline, online and only any device that has a web browser!</p>\n  <a class="btn btn-default btn-lg" ui-sref="login" ng-show="!user">Login</a>\n  <a class="btn btn-default btn-lg" ui-sref="register" ng-show="!user">Register</a>\n  <a class="btn btn-default btn-lg" ui-sref="lists.index" ng-show="user">My Lists</a>\n</div>\n';
-},{}],21:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = angular.module('splash', [])
 .config(function($stateProvider) {
   $stateProvider
@@ -298,7 +321,7 @@ module.exports = angular.module('splash', [])
     })
 });
 
-},{"./index.html":20}],22:[function(require,module,exports){
+},{"./index.html":24}],26:[function(require,module,exports){
 //     Underscore.js 1.6.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -1643,4 +1666,4 @@ module.exports = angular.module('splash', [])
   }
 }).call(this);
 
-},{}]},{},[10])
+},{}]},{},[14])
