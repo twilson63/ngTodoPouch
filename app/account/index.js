@@ -1,3 +1,3 @@
 module.exports = angular.module('account', [])
-  .config(require('./account-config'))
-  .factory('$accountSvc', require('./services/account-service'));
+  .config(['$stateProvider', require('./account-config')])
+  .factory('$accountSvc', ['$http', require('./services/account-service')]);

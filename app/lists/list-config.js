@@ -7,17 +7,21 @@ module.exports = function ($stateProvider) {
     })
     .state('lists.index', {
       url: '/',
-      controller: require('./index/list-index-controller'),
+      controller: ['$scope', '$todoSvc', 
+        require('./index/list-index-controller')],
       template: require('./index/list-index.html')
     })
     .state('lists.new', {
       url: '/new',
-      controller: require('./new/list-new-controller'),
+      controller: ['$scope', '$todoSvc', '$state',
+        require('./new/list-new-controller')],
       template: require('./new/list-new.html')
     })
     .state('lists.show', {
       url: '/:id',
-      controller: require('./show/list-show-controller'),
+      controller: ['$scope', '$todoSvc','$stateParams', '$state',
+        '$us', '$window',
+        require('./show/list-show-controller')],
       template: require('./show/list-show.html')
     });
 };

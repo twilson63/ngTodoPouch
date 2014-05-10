@@ -1,9 +1,9 @@
 {
   "name": "todolists",
-  "version": "0.1.3",
+  "version": "0.1.3-1",
   "description": "An AngularJS-Atomify-PouchDb Tutorial",
   "scripts": {
-    "watch": "atomify -d",
+    "build": "atomify && uglifyjs ./www/bundle.js -o ./www/bundle.min.js",
     "start": "node server.js",
     "test": "tap app/**/*_test.js",
     "dev": "npm run watch & npm start"
@@ -20,7 +20,8 @@
     "atomify": "^1.5.0-beta7",
     "nodemon": "^1.0.17",
     "supertest": "^0.12.0",
-    "pouchdb": "^2.2.0"
+    "pouchdb": "^2.2.0",
+    "uglify-js": "^2.4.13"
   },
   "dependencies": {
     "express": "^4.1.1",
@@ -34,8 +35,7 @@
   "atomify": {
     "js": {
       "entry": "app/index.js",
-      "output": "www/bundle.js",
-      "watch": true
+      "output": "www/bundle.js"
     },
     "css": {
       "entry": "app/index.css",

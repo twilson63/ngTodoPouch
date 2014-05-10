@@ -1,3 +1,3 @@
 module.exports = angular.module('lists', [])
-  .config(require('./list-config'))
-  .factory('$todoSvc', require('./services/todo-service'));
+  .config(['$stateProvider', require('./list-config')])
+  .factory('$todoSvc', ['$db', require('./services/todo-service')]);
