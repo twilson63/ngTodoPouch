@@ -18,7 +18,7 @@ test('route /register should be successful', function (t) {
   routes(app);
   request({
     body: function (cb) {
-      cb({name: 'foo'});
+      cb(null, {name: 'foo'});
     }
   }, {
     json: function (obj) {

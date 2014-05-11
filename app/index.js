@@ -3,7 +3,7 @@ angular.module('TodoApp', ['ui.router',
   require('./account').name,
   require('./lists').name
 ])
-.config(['$urlRouterProvider', require('./app-config')])
+.config(['$urlRouterProvider', '$httpProvider', require('./app-config')])
 .controller('ApplicationCtrl', ['$scope', '$state', '$db',
   '$http', '$user', '$set', '$origin', require('./app-controller')])
 .factory('$db', function() {

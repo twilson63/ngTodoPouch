@@ -54,6 +54,6 @@ var $origin = 'http://localhost:3000';
 test('set $scope.title to TODO App', function(t) {
 
   appCtrl(scopeMock, stateMock, dbMock, httpMock, $user, $set, $origin);
-  t.equals(scopeMock.title, 'TODO App');
+  t.equals(scopeMock.title, 'The Ultimate TODO App');
   t.end();
 });

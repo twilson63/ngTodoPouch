@@ -72,20 +72,27 @@ module.exports = '<div class="container">\n<h2>Forgot Password</h2>\n<form noval
 module.exports = function ($http) {
   return {
     $register: function(user) {
-      return $http.post('/register', user);
+      return $http.post('/api/register', user);
     },
     $login: function(user) {
-      return $http.post('/db/_session', user);
-    },
-    $active: function() {
-      return $http.get('/db/_session');
+      return $http.post('/api/login', user);
     }
   }
 }
 
 },{}],12:[function(require,module,exports){
-module.exports = function ($urlRouterProvider) {
+module.exports = function ($urlRouterProvider, $httpProvider) {
   $urlRouterProvider.otherwise('/');
+  // $httpProvider.interceptors.push(function ($rootScope, $state, $q) {
+  //   return {
+  //     'responseError': function (rejection) {
+  //       console.log($state.current);
+        //if (rejection.state === 401 && $state.current != login) {
+        //  $state.go('login');
+  //       //}
+  //     }
+  //   }
+  // });
 };
 
 },{}],13:[function(require,module,exports){
@@ -101,7 +108,7 @@ module.exports = function ($scope, $state, $db,
   };
 
   // if session still active then auto login...
-  $http.get('/db/_session').then(function (res) {
+  $http.get('/api/session').then(function (res) {
     session(null, res.data.userCtx.name);
   }, function () { $state.go('splash'); });
 
@@ -117,12 +124,10 @@ module.exports = function ($scope, $state, $db,
 
   $scope.logout = function() {
     // need to send request to kill session
-    $http.delete('/db/_session').then(function (res) {
-      console.log(res);
+    $http.post('/api/logout').then(function () {
+      $scope.user = null;
+      $state.go('splash');
     });
-    
-    $scope.user = null;
-    $state.go('splash');
   };
 
   $db.changes({
@@ -140,7 +145,7 @@ angular.module('TodoApp', ['ui.router',
   require('./account').name,
   require('./lists').name
 ])
-.config(['$urlRouterProvider', require('./app-config')])
+.config(['$urlRouterProvider', '$httpProvider', require('./app-config')])
 .controller('ApplicationCtrl', ['$scope', '$state', '$db',
   '$http', '$user', '$set', '$origin', require('./app-controller')])
 .factory('$db', function() {

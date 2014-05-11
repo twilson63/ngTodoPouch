@@ -8,8 +8,11 @@ module.exports = function (app) {
     if (method === 'delete') method = 'del';
 
     var path = req.url.replace('/db', '');
-    req.pipe(request[method](userUrl + path))
-    .pipe(res);
+    req.pipe(request[method](userUrl + path, function (e, r, b) {
+      //res.writeHead(r.statusCode, {'Content-Type': 'application/json'});
+      res.end(b);
+    }));
+
   });
 
   return app;

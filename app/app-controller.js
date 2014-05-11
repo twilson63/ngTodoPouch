@@ -10,7 +10,7 @@ module.exports = function ($scope, $state, $db,
   };
 
   // if session still active then auto login...
-  $http.get('/db/_session').then(function (res) {
+  $http.get('/api/session').then(function (res) {
     session(null, res.data.userCtx.name);
   }, function () { $state.go('splash'); });
 
@@ -26,7 +26,7 @@ module.exports = function ($scope, $state, $db,
 
   $scope.logout = function() {
     // need to send request to kill session
-    $http.delete('/db/_session').then(function () {
+    $http.post('/api/logout').then(function () {
       $scope.user = null;
       $state.go('splash');
     });
