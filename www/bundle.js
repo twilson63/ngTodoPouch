@@ -43,7 +43,7 @@ module.exports = angular.module('account', [])
 module.exports = function ($scope, $accountSvc) {
   $scope.login = function (user) {
     $accountSvc.$login(user).then(function (info) {
-      alert('Successfully Logged In!');
+      //alert('Successfully Logged In!');
       $scope.$emit('account:loggedIn', { name: user.name });
     });
   };
@@ -72,10 +72,13 @@ module.exports = '<div class="container">\n<h2>Forgot Password</h2>\n<form noval
 module.exports = function ($http) {
   return {
     $register: function(user) {
-      return $http.post('/api/register', user);
+      return $http.post('/register', user);
     },
     $login: function(user) {
-      return $http.post('/api/login', user);
+      return $http.post('/db/_session', user);
+    },
+    $active: function() {
+      return $http.get('/db/_session');
     }
   }
 }
@@ -88,11 +91,9 @@ module.exports = function ($urlRouterProvider) {
 },{}],13:[function(require,module,exports){
 // Application Controller
 module.exports = function ($scope, $state, $db,
-  $http, $user, $set, $origin) {
+  $http, $origin) {
   var session = function(e, user) {
     $scope.user = user;
-    // store current username
-    $set('user', user.name);
     var opts = { live: true };
     var remoteDb = $origin + '/db/' + user.name;
     $db.sync(remoteDb, opts);
@@ -100,19 +101,26 @@ module.exports = function ($scope, $state, $db,
   };
 
   // if session still active then auto login...
-  if ($user) {
-    $http.get('/session/' + $user).then(function(res) {
-      session(null, {name: $user});
-    }, function() { $state.go('splash'); });
-  }
+  $http.get('/db/_session').then(function (res) {
+    session(null, res.data.userCtx.name);
+  }, function () { $state.go('splash'); });
 
-  $scope.title = 'TODO App';
+  // if ($user) {
+  //   $http.get('/session/' + $user).then(function(res) {
+  //     session(null, {name: $user});
+  //   }, function() { $state.go('splash'); });
+  // }
+
+  $scope.title = 'The Ultimate TODO App';
   $scope.$on('account:registered', session);
   $scope.$on('account:loggedIn', session);
 
   $scope.logout = function() {
     // need to send request to kill session
-
+    $http.delete('/db/_session').then(function (res) {
+      console.log(res);
+    });
+    
     $scope.user = null;
     $state.go('splash');
   };
