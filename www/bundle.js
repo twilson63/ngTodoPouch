@@ -103,7 +103,16 @@ module.exports = function ($scope, $state, $db,
     $scope.user = user.name;
     var opts = { live: true };
     var remoteDb = $origin + '/db/' + user.name;
-    $db.sync(remoteDb, opts);
+    console.log(remoteDb);
+    $db(user.name).sync(remoteDb, opts);
+
+    $db(user.name).changes({
+      since: 'latest',
+      live: true
+    }).on('change', function (change) {
+      $scope.$broadcast('database:changed', change);
+    });
+
     $state.go('lists.index');
   };
 
@@ -124,14 +133,6 @@ module.exports = function ($scope, $state, $db,
       $state.go('splash');
     });
   };
-
-  $db.changes({
-    since: 'latest',
-    live: true
-  }).on('change', function (change) {
-    $scope.$broadcast('database:changed', change);
-  });
-
 };
 
 },{}],14:[function(require,module,exports){
@@ -144,8 +145,10 @@ angular.module('TodoApp', ['ui.router',
 .controller('ApplicationCtrl', ['$scope', '$state', '$db',
   '$http', '$origin', require('./app-controller')])
 .factory('$db', function() {
+  return function (user) {
+    return PouchDB(user + '_todos');    
+  }
   //var url = $window.location.origin + '/db/' + $window.localStorage.getItem('user');
-  return PouchDB('myTodos');
 })
 .constant('$us', require('underscore'))
 .factory('$origin',['$window', function($window) {
@@ -161,7 +164,7 @@ module.exports = angular.module('lists', [])
 },{"./list-config":18,"./services/todo-service":21}],16:[function(require,module,exports){
 module.exports = function ($scope, $todoSvc) {
   var loadList = function() {
-    $todoSvc.$all(function(err, res) {
+    $todoSvc.$all($scope.user, function(err, res) {
       $scope.$apply(function() {
         $scope.lists = res.rows.map(function(row) {
           return row.value;
@@ -210,7 +213,7 @@ module.exports = function ($stateProvider) {
 },{"./index/list-index-controller":16,"./index/list-index.html":17,"./new/list-new-controller":19,"./new/list-new.html":20,"./show/list-show-controller":22,"./show/list-show.html":23}],19:[function(require,module,exports){
 module.exports = function ($scope, $todoSvc, $state) {
   $scope.save = function (todolist) {
-    $todoSvc.$post(todolist)
+    $todoSvc.$post($scope.user, todolist)
       .then(function (list) {
         // growl message
         // redirect to index
@@ -226,26 +229,25 @@ module.exports = '<div class="container">\n  <h2>New List</h2>\n  <form novalida
 },{}],21:[function(require,module,exports){
 module.exports = function($db) {
   return {
-    $all: function (cb) {
-      $db.query(function(doc){
+    $all: function (name, cb) {
+      $db(name).query(function(doc){
         if (doc.type === "list" && doc.status === 'active')
           emit(doc._id, doc);
       }, cb);
     },
-    $post: function(doc) {
+    $post: function(name, doc) {
       doc.type = 'list';
       doc.status = 'active';
-      return $db.post(doc);
+      return $db(name).post(doc);
     },
-    $put: function (doc) {
-
-      return $db.put(doc);
+    $put: function (name, doc) {
+      return $db(name).put(doc);
     },
-    $get: function (id) {
-      return $db.get(id);
+    $get: function (name, id) {
+      return $db(name).get(id);
     },
-    $remove: function(doc) {
-      return $db.remove(doc);
+    $remove: function(name, doc) {
+      return $db(name).remove(doc);
     }
   };
 };
@@ -254,7 +256,7 @@ module.exports = function($db) {
 module.exports = function ($scope, $todoSvc,
   $stateParams, $state, $us, $window) {
   var get = function(id) {
-    $todoSvc.$get(id).then(function(doc) {
+    $todoSvc.$get($scope.name, id).then(function(doc) {
       $scope.$apply(function() {
         $scope.list = doc;
       });
@@ -269,7 +271,7 @@ module.exports = function ($scope, $todoSvc,
     $scope.task = null;
   };
   $scope.save = function(list) {
-    $todoSvc.$put(list).then(function (doc) {
+    $todoSvc.$put($scope.name, list).then(function (doc) {
       $scope.$apply(function() {
         $state.go('lists.index');
       });
@@ -289,13 +291,13 @@ module.exports = function ($scope, $todoSvc,
 
   $scope.rmList = function(list) {
     if ($window.confirm('Are you sure?')) {
-      $todoSvc.$remove(list).then(function(res) {
+      $todoSvc.$remove($scope.name, list).then(function(res) {
         $scope.$apply(function() {
           $state.go('lists.index');
         });
       });
     }
-  }
+  };
 
   $scope.$on('database:changed', function(e, change) {
     if (change.id === $scope.list._id) {

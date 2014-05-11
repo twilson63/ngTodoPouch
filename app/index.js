@@ -7,8 +7,10 @@ angular.module('TodoApp', ['ui.router',
 .controller('ApplicationCtrl', ['$scope', '$state', '$db',
   '$http', '$origin', require('./app-controller')])
 .factory('$db', function() {
+  return function (user) {
+    return PouchDB(user + '_todos');    
+  }
   //var url = $window.location.origin + '/db/' + $window.localStorage.getItem('user');
-  return PouchDB('myTodos');
 })
 .constant('$us', require('underscore'))
 .factory('$origin',['$window', function($window) {

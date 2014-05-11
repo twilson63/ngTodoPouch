@@ -1,7 +1,7 @@
 module.exports = function ($scope, $todoSvc,
   $stateParams, $state, $us, $window) {
   var get = function(id) {
-    $todoSvc.$get(id).then(function(doc) {
+    $todoSvc.$get($scope.name, id).then(function(doc) {
       $scope.$apply(function() {
         $scope.list = doc;
       });
@@ -16,7 +16,7 @@ module.exports = function ($scope, $todoSvc,
     $scope.task = null;
   };
   $scope.save = function(list) {
-    $todoSvc.$put(list).then(function (doc) {
+    $todoSvc.$put($scope.name, list).then(function (doc) {
       $scope.$apply(function() {
         $state.go('lists.index');
       });
@@ -36,13 +36,13 @@ module.exports = function ($scope, $todoSvc,
 
   $scope.rmList = function(list) {
     if ($window.confirm('Are you sure?')) {
-      $todoSvc.$remove(list).then(function(res) {
+      $todoSvc.$remove($scope.name, list).then(function(res) {
         $scope.$apply(function() {
           $state.go('lists.index');
         });
       });
     }
-  }
+  };
 
   $scope.$on('database:changed', function(e, change) {
     if (change.id === $scope.list._id) {

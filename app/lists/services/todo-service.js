@@ -1,25 +1,24 @@
 module.exports = function($db) {
   return {
-    $all: function (cb) {
-      $db.query(function(doc){
+    $all: function (name, cb) {
+      $db(name).query(function(doc){
         if (doc.type === "list" && doc.status === 'active')
           emit(doc._id, doc);
       }, cb);
     },
-    $post: function(doc) {
+    $post: function(name, doc) {
       doc.type = 'list';
       doc.status = 'active';
-      return $db.post(doc);
+      return $db(name).post(doc);
     },
-    $put: function (doc) {
-
-      return $db.put(doc);
+    $put: function (name, doc) {
+      return $db(name).put(doc);
     },
-    $get: function (id) {
-      return $db.get(id);
+    $get: function (name, id) {
+      return $db(name).get(id);
     },
-    $remove: function(doc) {
-      return $db.remove(doc);
+    $remove: function(name, doc) {
+      return $db(name).remove(doc);
     }
   };
 };

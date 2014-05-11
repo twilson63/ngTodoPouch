@@ -31,7 +31,7 @@ module.exports = function(app) {
   .methods("GET")
   .nocache();
 
-  app.route('/register', function (req, res) {
+  app.route('/api/register', function (req, res) {
     req.body(function (err, body) {
       register(body, function (err, results) {
         if (err) return res.json({ message: err.message}, 500);
@@ -40,7 +40,7 @@ module.exports = function(app) {
     });
   }).methods("POST");
 
-  app.route('/forgot', function (req, res) {
+  app.route('/api/forgot', function (req, res) {
     req.body(function (err, body) {
       forgot(body, function (err) {
         if (err) return res.json({ message: err.message }, 500);

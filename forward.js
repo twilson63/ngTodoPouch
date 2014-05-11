@@ -6,11 +6,9 @@ module.exports = function (app) {
   app.route('/db/*', function (req, res) {
     var method = req.method.toLowerCase();
     if (method === 'delete') method = 'del';
-
     var path = req.url.replace('/db', '');
-    req.pipe(request[method](userUrl + path, function (e, r, b) {
-      //res.writeHead(r.statusCode, {'Content-Type': 'application/json'});
-      res.end(b);
+    req.pipe(request[method](userUrl + path, { json: true }, function (e, r, b) {
+      res.json(b);
     }));
 
   });

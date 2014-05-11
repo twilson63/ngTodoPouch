@@ -5,7 +5,16 @@ module.exports = function ($scope, $state, $db,
     $scope.user = user.name;
     var opts = { live: true };
     var remoteDb = $origin + '/db/' + user.name;
-    $db.sync(remoteDb, opts);
+    console.log(remoteDb);
+    $db(user.name).sync(remoteDb, opts);
+
+    $db(user.name).changes({
+      since: 'latest',
+      live: true
+    }).on('change', function (change) {
+      $scope.$broadcast('database:changed', change);
+    });
+
     $state.go('lists.index');
   };
 
@@ -26,12 +35,4 @@ module.exports = function ($scope, $state, $db,
       $state.go('splash');
     });
   };
-
-  $db.changes({
-    since: 'latest',
-    live: true
-  }).on('change', function (change) {
-    $scope.$broadcast('database:changed', change);
-  });
-
 };
