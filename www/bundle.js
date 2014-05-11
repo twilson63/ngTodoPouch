@@ -100,7 +100,7 @@ module.exports = function ($urlRouterProvider, $httpProvider) {
 module.exports = function ($scope, $state, $db,
   $http, $origin) {
   var session = function(e, user) {
-    $scope.user = user;
+    $scope.user = user.name;
     var opts = { live: true };
     var remoteDb = $origin + '/db/' + user.name;
     $db.sync(remoteDb, opts);
@@ -109,14 +109,9 @@ module.exports = function ($scope, $state, $db,
 
   // if session still active then auto login...
   $http.get('/api/session').then(function (res) {
-    session(null, res.data.userCtx.name);
+    if (res.data.error) { return $state.go('splash'); }
+    session(null, { name: res.data.userCtx.name} );
   }, function () { $state.go('splash'); });
-
-  // if ($user) {
-  //   $http.get('/session/' + $user).then(function(res) {
-  //     session(null, {name: $user});
-  //   }, function() { $state.go('splash'); });
-  // }
 
   $scope.title = 'The Ultimate TODO App';
   $scope.$on('account:registered', session);
@@ -147,7 +142,7 @@ angular.module('TodoApp', ['ui.router',
 ])
 .config(['$urlRouterProvider', '$httpProvider', require('./app-config')])
 .controller('ApplicationCtrl', ['$scope', '$state', '$db',
-  '$http', '$user', '$set', '$origin', require('./app-controller')])
+  '$http', '$origin', require('./app-controller')])
 .factory('$db', function() {
   //var url = $window.location.origin + '/db/' + $window.localStorage.getItem('user');
   return PouchDB('myTodos');
@@ -156,14 +151,7 @@ angular.module('TodoApp', ['ui.router',
 .factory('$origin',['$window', function($window) {
   return $window.location.origin;
 }])
-.factory('$set', ['$window',function($window) {
-  return function (key, value) {
-    $window.localStorage.setItem(key, value);
-  };
-}])
-.factory('$user', ['$window', function ($window) {
-  return $window.localStorage.getItem('user');
-}]);
+;
 
 },{"./account":4,"./app-config":12,"./app-controller":13,"./lists":15,"./splash":25,"underscore":26}],15:[function(require,module,exports){
 module.exports = angular.module('lists', [])

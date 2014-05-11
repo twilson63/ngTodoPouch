@@ -16,17 +16,20 @@ module.exports = function(app) {
   }).methods("POST");
 
   app.route('/api/logout', function (req, res) {
-    res.headers['Set-Cookie'] = 'AuthSession=LoggedOut';
-    res.json()
+    res.setHeader('set-cookie', 'AuthSession=');
+    res.json({ok: true});
   });
 
   app.route('/api/session', function (req, res) {
-    session(function (err, results, headers) {
+    var cookie = '';
+    if (req.headers && req.headers.cookie) { cookie = req.headers.cookie; }
+    session(cookie, function (err, r, body) {
       if (err) return res.json({ message: err.message }, 500);
-      //res.headers['Set-Cookie'] = headers['Set-Cookie'];
-      res.json(results);
+      res.json(body);
     });
-  }).methods("GET");
+  })
+  .methods("GET")
+  .nocache();
 
   app.route('/register', function (req, res) {
     req.body(function (err, body) {

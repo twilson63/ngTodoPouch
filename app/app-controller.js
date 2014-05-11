@@ -2,7 +2,7 @@
 module.exports = function ($scope, $state, $db,
   $http, $origin) {
   var session = function(e, user) {
-    $scope.user = user;
+    $scope.user = user.name;
     var opts = { live: true };
     var remoteDb = $origin + '/db/' + user.name;
     $db.sync(remoteDb, opts);
@@ -11,14 +11,9 @@ module.exports = function ($scope, $state, $db,
 
   // if session still active then auto login...
   $http.get('/api/session').then(function (res) {
-    session(null, res.data.userCtx.name);
+    if (res.data.error) { return $state.go('splash'); }
+    session(null, { name: res.data.userCtx.name} );
   }, function () { $state.go('splash'); });
-
-  // if ($user) {
-  //   $http.get('/session/' + $user).then(function(res) {
-  //     session(null, {name: $user});
-  //   }, function() { $state.go('splash'); });
-  // }
 
   $scope.title = 'The Ultimate TODO App';
   $scope.$on('account:registered', session);
