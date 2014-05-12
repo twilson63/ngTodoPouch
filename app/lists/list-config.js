@@ -7,7 +7,7 @@ module.exports = function ($stateProvider) {
     })
     .state('lists.index', {
       url: '/',
-      controller: ['$scope', '$todoSvc', 
+      controller: ['$scope', '$todoSvc',
         require('./index/list-index-controller')],
       template: require('./index/list-index.html')
     })

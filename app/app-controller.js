@@ -5,7 +5,6 @@ module.exports = function ($scope, $state, $db,
     $scope.user = user.name;
     var opts = { live: true };
     var remoteDb = $origin + '/db/' + user.name;
-    console.log(remoteDb);
     $db(user.name).sync(remoteDb, opts);
 
     $db(user.name).changes({
@@ -20,6 +19,7 @@ module.exports = function ($scope, $state, $db,
 
   // if session still active then auto login...
   $http.get('/api/session').then(function (res) {
+    //console.log(res.data);
     if (res.data.error) { return $state.go('splash'); }
     session(null, { name: res.data.userCtx.name} );
   }, function () { $state.go('splash'); });

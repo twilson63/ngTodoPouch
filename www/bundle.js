@@ -108,7 +108,6 @@ module.exports = function ($scope, $state, $db,
     $scope.user = user.name;
     var opts = { live: true };
     var remoteDb = $origin + '/db/' + user.name;
-    console.log(remoteDb);
     $db(user.name).sync(remoteDb, opts);
 
     $db(user.name).changes({
@@ -123,6 +122,7 @@ module.exports = function ($scope, $state, $db,
 
   // if session still active then auto login...
   $http.get('/api/session').then(function (res) {
+    console.log(res.data);
     if (res.data.error) { return $state.go('splash'); }
     session(null, { name: res.data.userCtx.name} );
   }, function () { $state.go('splash'); });
@@ -200,7 +200,7 @@ module.exports = function ($stateProvider) {
     })
     .state('lists.index', {
       url: '/',
-      controller: ['$scope', '$todoSvc', 
+      controller: ['$scope', '$todoSvc',
         require('./index/list-index-controller')],
       template: require('./index/list-index.html')
     })
@@ -265,8 +265,9 @@ module.exports = function($db) {
 module.exports = function ($scope, $todoSvc,
   $stateParams, $state, $us, $window) {
   var get = function(id) {
-    $todoSvc.$get($scope.name, id).then(function(doc) {
+    $todoSvc.$get($scope.user, id).then(function(doc) {
       $scope.$apply(function() {
+        console.log(doc);
         $scope.list = doc;
       });
     });
@@ -280,7 +281,7 @@ module.exports = function ($scope, $todoSvc,
     $scope.task = null;
   };
   $scope.save = function(list) {
-    $todoSvc.$put($scope.name, list).then(function (doc) {
+    $todoSvc.$put($scope.user, list).then(function (doc) {
       $scope.$apply(function() {
         $state.go('lists.index');
       });
@@ -300,7 +301,7 @@ module.exports = function ($scope, $todoSvc,
 
   $scope.rmList = function(list) {
     if ($window.confirm('Are you sure?')) {
-      $todoSvc.$remove($scope.name, list).then(function(res) {
+      $todoSvc.$remove($scope.user, list).then(function(res) {
         $scope.$apply(function() {
           $state.go('lists.index');
         });

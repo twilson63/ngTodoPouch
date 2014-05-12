@@ -1,8 +1,9 @@
 module.exports = function ($scope, $todoSvc,
   $stateParams, $state, $us, $window) {
   var get = function(id) {
-    $todoSvc.$get($scope.name, id).then(function(doc) {
+    $todoSvc.$get($scope.user, id).then(function(doc) {
       $scope.$apply(function() {
+        console.log(doc);
         $scope.list = doc;
       });
     });
@@ -16,7 +17,7 @@ module.exports = function ($scope, $todoSvc,
     $scope.task = null;
   };
   $scope.save = function(list) {
-    $todoSvc.$put($scope.name, list).then(function (doc) {
+    $todoSvc.$put($scope.user, list).then(function (doc) {
       $scope.$apply(function() {
         $state.go('lists.index');
       });
@@ -36,7 +37,7 @@ module.exports = function ($scope, $todoSvc,
 
   $scope.rmList = function(list) {
     if ($window.confirm('Are you sure?')) {
-      $todoSvc.$remove($scope.name, list).then(function(res) {
+      $todoSvc.$remove($scope.user, list).then(function(res) {
         $scope.$apply(function() {
           $state.go('lists.index');
         });
