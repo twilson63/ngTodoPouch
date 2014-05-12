@@ -7,11 +7,11 @@ test('scope should have an array of todolists', function (t) {
       fn.call(scope);
     },
     $on: function (event, fn) {
-      
+
     }
   };
   todoSvc = {
-    $all: function(cb) {
+    $all: function(name, cb) {
       cb(null, { rows: [1,2,3]});
     }
   };

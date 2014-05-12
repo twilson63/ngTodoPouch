@@ -10,14 +10,14 @@ test('success', function (t) {
     $on: function () {}
   };
   var todoSvc = {
-    $get: function (id) {
+    $get: function (name, id) {
       return {
         then: function (fn) {
           fn({ name: 'foo' });
         }
       }
     },
-    $put: function (doc) {
+    $put: function (name, doc) {
       t.equals(doc.tasks[0].description, 'Task1');
       return {
         then: function (fn) {

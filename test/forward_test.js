@@ -15,7 +15,9 @@ test('proxy all db requests', function (t) {
       };
     }
   };
-  var res = {};
+  var res = {
+    json: function() {}
+  };
   var app = {
     route: function (route, fn) {
       request = fn;

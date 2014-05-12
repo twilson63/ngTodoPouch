@@ -4,7 +4,7 @@ var listNewCtrl = require('./list-new-controller');
 test('success', function (t) {
   var scope = {};
   var db = {
-    $post: function(doc) {
+    $post: function(name, doc) {
       t.equals(doc.name, 'foo');
       return {
         then: function(fn) {
