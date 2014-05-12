@@ -1,6 +1,6 @@
 {
   "name": "todolists",
-  "version": "0.2.1-12",
+  "version": "0.2.2",
   "description": "An AngularJS-Atomify-PouchDb Tutorial",
   "scripts": {
     "build": "atomify && uglifyjs ./www/bundle.js -o ./www/bundle.min.js",
