@@ -1,15 +1,15 @@
 <div class="container">
-<form novalidate ng-submit="login(user)">
+<form name="form" novalidate ng-submit="login(user)">
   <div class="form-group">
     <label>Username</label>
-    <input class="form-control" ng-model="user.name">
+    <input class="form-control" ng-model="user.name" required>
   </div>
   <div class="form-group">
     <label>Password</label>
-    <input class="form-control" type="password" ng-model="user.password">
+    <input class="form-control" type="password" ng-model="user.password" required>
   </div>
   <div class="form-group">
-    <button class="btn btn-default">Login</button>
+    <button class="btn btn-default" ng-disabled="form.$invalid">Login</button>
   </div>
 </form>
 </div>

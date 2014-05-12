@@ -3,8 +3,7 @@ module.exports = angular.module('splash', [])
   $stateProvider
     .state('splash', {
       url: '/',
-      controller: ['$scope', function ($scope) {
-
+      controller: ['$scope', function ($scope, growl) {
       }],
       template: require('./index.html')
     })
