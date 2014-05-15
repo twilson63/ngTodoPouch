@@ -42,7 +42,7 @@ test('get no session ', function (t) {
 
 var db = function (name) {
   return {
-
+    sync: function() {}
   }
 };
 
