@@ -15,6 +15,7 @@ module.exports = function ($scope, $session, $state) {
   $session.get().then(function (user) {
     session(null, user);
   }, function () { $state.go('splash'); });
+
   // create session and set app state
   function session(e, user) {
     $session.create(user).then(function (results) {
@@ -24,7 +25,6 @@ module.exports = function ($scope, $session, $state) {
           $scope.$broadcast('database:changed', change);
       });
       $scope.user = results.name;
-      console.log($scope.user);
       $state.go('lists.index');
     });
   };

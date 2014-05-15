@@ -5,7 +5,7 @@ var origin = 'http://localhost:3000';
 
 test('create session successfully', function (t) {
   var session = appSession(db, {}, origin, q, setTimeout);
-  session.create(null, { name: 'foo' }).then(function(res) {
+  session.create({ name: 'foo' }).then(function(res) {
     t.equals(res.name, 'foo');
     t.ok(res.db);
     t.end();

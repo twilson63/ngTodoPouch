@@ -102,45 +102,69 @@ module.exports = function ($urlRouterProvider, $httpProvider) {
 
 },{}],13:[function(require,module,exports){
 // Application Controller
-module.exports = function ($scope, $state, $db,
-  $http, $origin) {
-  var session = function(e, user) {
-    $scope.user = user.name;
-    var opts = { live: true };
-    var remoteDb = $origin + '/db/' + user.name;
-    $db(user.name).sync(remoteDb, opts);
-
-    $db(user.name).changes({
-      since: 'latest',
-      live: true
-    }).on('change', function (change) {
-      $scope.$broadcast('database:changed', change);
-    });
-
-    $state.go('lists.index');
-  };
-
-  // if session still active then auto login...
-  $http.get('/api/session').then(function (res) {
-    console.log(res.data);
-    if (res.data.error) { return $state.go('splash'); }
-    session(null, { name: res.data.userCtx.name} );
-  }, function () { $state.go('splash'); });
-
+module.exports = function ($scope, $session, $state) {
+  // init scope
   $scope.title = 'The Ultimate TODO App';
   $scope.$on('account:registered', session);
   $scope.$on('account:loggedIn', session);
-
-  $scope.logout = function() {
-    // need to send request to kill session
-    $http.post('/api/logout').then(function () {
+  // need to send request to kill session
+  $scope.logout = function () {
+    $session.destroy().then(function () {
       $scope.user = null;
       $state.go('splash');
+    });
+  };
+  // get current session
+  $session.get().then(function (user) {
+    session(null, user);
+  }, function () { $state.go('splash'); });
+
+  // create session and set app state
+  function session(e, user) {
+    $session.create(user).then(function (results) {
+      results.db
+        .changes({ since: 'latest', live: true })
+        .on('change', function (change) {
+          $scope.$broadcast('database:changed', change);
+      });
+      $scope.user = results.name;
+      $state.go('lists.index');
     });
   };
 };
 
 },{}],14:[function(require,module,exports){
+module.exports = function ($db, $http, $origin, $q, $timeout) {
+  return {
+    // takes user name and syncs pouchDb
+    create: function (user) {
+      var deferred = $q.defer();
+      var opts = { live: true };
+      var remoteDb = $origin + '/db/' + user.name;
+      $db(user.name).sync(remoteDb, opts);
+      $timeout(function() {
+        deferred.resolve({ name: user.name, db: $db(user.name)});
+      }, 1);
+      return deferred.promise;
+    },
+    get: function () {
+      var deferred = $q.defer();
+      $http.get('/api/session').then(function (res) {
+        if (res.data.userCtx && res.data.userCtx.name) {
+          deferred.resolve({ name: res.data.userCtx.name });
+          return;
+        }
+        deferred.reject(res.data);
+      });
+      return deferred.promise;
+    },
+    destroy: function () {
+      return $http.post('/api/logout');
+    }
+  };
+};
+
+},{}],15:[function(require,module,exports){
 require('angular-ui-router/release/angular-ui-router')
 require('angular-sanitize/angular-sanitize');
 require('angular-growl/build/angular-growl');
@@ -151,8 +175,7 @@ angular.module('TodoApp', ['ui.router', 'ngSanitize', 'angular-growl',
   require('./lists').name
 ])
 .config(['$urlRouterProvider', '$httpProvider', require('./app-config')])
-.controller('ApplicationCtrl', ['$scope', '$state', '$db',
-  '$http', '$origin', require('./app-controller')])
+.controller('ApplicationCtrl', ['$scope', '$session', '$state', require('./app-controller')])
 .factory('$db', function() {
   return function (user) {
     return PouchDB(user + '_todos');
@@ -163,14 +186,17 @@ angular.module('TodoApp', ['ui.router', 'ngSanitize', 'angular-growl',
 .factory('$origin',['$window', function($window) {
   return $window.location.origin;
 }])
+.factory('$session', ['$db', '$http', '$origin', '$q', '$timeout',
+  require('./app-session')
+])
 ;
 
-},{"./account":4,"./app-config":12,"./app-controller":13,"./lists":15,"./splash":25,"angular-growl/build/angular-growl":26,"angular-sanitize/angular-sanitize":27,"angular-ui-router/release/angular-ui-router":28,"underscore":29}],15:[function(require,module,exports){
+},{"./account":4,"./app-config":12,"./app-controller":13,"./app-session":14,"./lists":16,"./splash":26,"angular-growl/build/angular-growl":27,"angular-sanitize/angular-sanitize":28,"angular-ui-router/release/angular-ui-router":29,"underscore":30}],16:[function(require,module,exports){
 module.exports = angular.module('lists', [])
   .config(['$stateProvider', require('./list-config')])
   .factory('$todoSvc', ['$db', require('./services/todo-service')]);
 
-},{"./list-config":18,"./services/todo-service":21}],16:[function(require,module,exports){
+},{"./list-config":19,"./services/todo-service":22}],17:[function(require,module,exports){
 module.exports = function ($scope, $todoSvc) {
   var loadList = function() {
     $todoSvc.$all($scope.user, function(err, res) {
@@ -188,9 +214,9 @@ module.exports = function ($scope, $todoSvc) {
   loadList();
 };
 
-},{}],17:[function(require,module,exports){
-module.exports = '<div class="container">\n  <div class="pull-right">\n    <a class="btn btn-default" ui-sref="lists.new">New List</a>\n  </div>\n  <h2>Todo Lists</h2>\n  <div class="list-group">\n    <a\n      class="list-group-item"\n      ui-sref="lists.show({ id: list._id})"\n      ng-repeat="list in lists">\n      <span class="badge badge-default pull-right">\n        {{list.tasks.length}} Tasks\n      </span>\n      {{list.name}}\n    </a>\n  </div>\n</div>\n';
 },{}],18:[function(require,module,exports){
+module.exports = '<div class="container">\n  <div class="pull-right">\n    <a class="btn btn-default" ui-sref="lists.new">New List</a>\n  </div>\n  <h2>Todo Lists</h2>\n  <div class="list-group">\n    <a\n      class="list-group-item"\n      ui-sref="lists.show({ id: list._id})"\n      ng-repeat="list in lists">\n      <span class="badge badge-default pull-right">\n        {{list.tasks.length}} Tasks\n      </span>\n      {{list.name}}\n    </a>\n  </div>\n</div>\n';
+},{}],19:[function(require,module,exports){
 module.exports = function ($stateProvider) {
   $stateProvider
     .state('lists', {
@@ -219,7 +245,7 @@ module.exports = function ($stateProvider) {
     });
 };
 
-},{"./index/list-index-controller":16,"./index/list-index.html":17,"./new/list-new-controller":19,"./new/list-new.html":20,"./show/list-show-controller":22,"./show/list-show.html":23}],19:[function(require,module,exports){
+},{"./index/list-index-controller":17,"./index/list-index.html":18,"./new/list-new-controller":20,"./new/list-new.html":21,"./show/list-show-controller":23,"./show/list-show.html":24}],20:[function(require,module,exports){
 module.exports = function ($scope, $todoSvc, $state) {
   $scope.save = function (todolist) {
     $todoSvc.$post($scope.user, todolist)
@@ -233,9 +259,9 @@ module.exports = function ($scope, $todoSvc, $state) {
   };
 };
 
-},{}],20:[function(require,module,exports){
-module.exports = '<div class="container">\n  <h2>New List</h2>\n  <form novalidate ng-submit="save(list)">\n    <div class="form-group">\n      <label>Name</label>\n      <input class="form-control" ng-model="list.name">\n    </div>\n    <div class="form-group">\n      <label>Description</label>\n      <input class="form-control" ng-model="list.description">\n    </div>\n    <div class="form-group">\n      <label>Tags</label>\n      <input class="form-control" ng-model="list.tags">\n    </div>\n    <div class="form-group">\n      <button class="btn btn-default">Save</button>\n    </div>\n  </form>\n</div>\n';
 },{}],21:[function(require,module,exports){
+module.exports = '<div class="container">\n  <h2>New List</h2>\n  <form novalidate ng-submit="save(list)">\n    <div class="form-group">\n      <label>Name</label>\n      <input class="form-control" ng-model="list.name">\n    </div>\n    <div class="form-group">\n      <label>Description</label>\n      <input class="form-control" ng-model="list.description">\n    </div>\n    <div class="form-group">\n      <label>Tags</label>\n      <input class="form-control" ng-model="list.tags">\n    </div>\n    <div class="form-group">\n      <button class="btn btn-default">Save</button>\n    </div>\n  </form>\n</div>\n';
+},{}],22:[function(require,module,exports){
 module.exports = function($db) {
   return {
     $all: function (name, cb) {
@@ -261,7 +287,7 @@ module.exports = function($db) {
   };
 };
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = function ($scope, $todoSvc,
   $stateParams, $state, $us, $window) {
   var get = function(id) {
@@ -317,11 +343,11 @@ module.exports = function ($scope, $todoSvc,
 
 };
 
-},{}],23:[function(require,module,exports){
-module.exports = '<div class="container">\n  <div class="pull-right">\n    <button class="btn btn-warning" ng-click="rmDone(list)">\n      Archive Completed Tasks\n    </button>\n    <button class="btn btn-default" ng-click="save(list)">\n      Save\n    </button>\n  </div>\n  <h2>\n    {{list.name}}\n    <span class="glyphicon glyphicon-trashglyphicon glyphicon-trash" style="font-size: .5em;" ng-click="rmList(list)"></span>\n  </h2>\n  <p>{{list.description}}</p>\n  <form class="form-horizontal" novalidate ng-submit="add(task)">\n    <div class="form-group">\n      <input class="form-control" placeholder="Add Task and Press Enter" ng-model="task.description">\n    </div>\n  </form>\n  <ul class="list-group">\n    <li class="list-group-item" ng-repeat="task in list.tasks | orderBy:\'done\':false">\n      <div class="pull-right">\n        <i class="glyphicon glyphicon-trashglyphicon glyphicon-trash" ng-click="rmTask(task)"></i>\n      </div>\n      <div class="checkbox">\n        <label>\n          <input class="" type="checkbox" ng-model="task.done">\n          {{task.description}}\n        </label>\n      </div>\n    </li>\n  </ul>\n</div>\n';
 },{}],24:[function(require,module,exports){
-module.exports = '<div class="jumbotron">\n  <div class="container">\n    <h1>Ultimate Task List</h1>\n  </div>\n</div>\n<div class="container">\n  <p>Welcome to the ultimate todo list application, it works offline, online and only any device that has a web browser!</p>\n  <a class="btn btn-default btn-lg" ui-sref="login" ng-show="!user">Login</a>\n  <a class="btn btn-default btn-lg" ui-sref="register" ng-show="!user">Register</a>\n  <a class="btn btn-default btn-lg" ui-sref="lists.index" ng-show="user">My Lists</a>\n</div>\n';
+module.exports = '<div class="container">\n  <div class="pull-right">\n    <button class="btn btn-warning" ng-click="rmDone(list)">\n      Archive Completed Tasks\n    </button>\n    <button class="btn btn-default" ng-click="save(list)">\n      Save\n    </button>\n  </div>\n  <h2>\n    {{list.name}}\n    <span class="glyphicon glyphicon-trashglyphicon glyphicon-trash" style="font-size: .5em;" ng-click="rmList(list)"></span>\n  </h2>\n  <p>{{list.description}}</p>\n  <form class="form-horizontal" novalidate ng-submit="add(task)">\n    <div class="form-group">\n      <input class="form-control" placeholder="Add Task and Press Enter" ng-model="task.description">\n    </div>\n  </form>\n  <ul class="list-group">\n    <li class="list-group-item" ng-repeat="task in list.tasks | orderBy:\'done\':false">\n      <div class="pull-right">\n        <i class="glyphicon glyphicon-trashglyphicon glyphicon-trash" ng-click="rmTask(task)"></i>\n      </div>\n      <div class="checkbox">\n        <label>\n          <input class="" type="checkbox" ng-model="task.done">\n          {{task.description}}\n        </label>\n      </div>\n    </li>\n  </ul>\n</div>\n';
 },{}],25:[function(require,module,exports){
+module.exports = '<div class="jumbotron">\n  <div class="container">\n    <h1>Ultimate Task List</h1>\n  </div>\n</div>\n<div class="container">\n  <p>Welcome to the ultimate todo list application, it works offline, online and only any device that has a web browser!</p>\n  <a class="btn btn-default btn-lg" ui-sref="login" ng-show="!user">Login</a>\n  <a class="btn btn-default btn-lg" ui-sref="register" ng-show="!user">Register</a>\n  <a class="btn btn-default btn-lg" ui-sref="lists.index" ng-show="user">My Lists</a>\n</div>\n';
+},{}],26:[function(require,module,exports){
 module.exports = angular.module('splash', [])
 .config(function($stateProvider) {
   $stateProvider
@@ -333,7 +359,7 @@ module.exports = angular.module('splash', [])
     })
 });
 
-},{"./index.html":24}],26:[function(require,module,exports){
+},{"./index.html":25}],27:[function(require,module,exports){
 /**
  * angular-growl - v0.4.0 - 2013-11-19
  * https://github.com/marcorinck/angular-growl
@@ -517,7 +543,7 @@ angular.module('angular-growl').provider('growl', function () {
     }
   ];
 });
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /**
  * @license AngularJS v1.2.16
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -1143,7 +1169,7 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
 
 })(window, window.angular);
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.2.10
@@ -4367,7 +4393,7 @@ angular.module('ui.router.compat')
   .provider('$route', $RouteProvider)
   .directive('ngView', $ViewDirective);
 })(window, window.angular);
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 //     Underscore.js 1.6.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -5712,4 +5738,4 @@ angular.module('ui.router.compat')
   }
 }).call(this);
 
-},{}]},{},[14])
+},{}]},{},[15])

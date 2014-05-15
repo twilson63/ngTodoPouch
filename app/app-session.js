@@ -1,7 +1,7 @@
 module.exports = function ($db, $http, $origin, $q, $timeout) {
   return {
     // takes user name and syncs pouchDb
-    create: function (e, user) {
+    create: function (user) {
       var deferred = $q.defer();
       var opts = { live: true };
       var remoteDb = $origin + '/db/' + user.name;
