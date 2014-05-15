@@ -1,59 +1,57 @@
+var q = require('q');
 var test = require('tap').test;
 var appCtrl = require('./app-controller');
 // mocks
-  var scopeMock = {
-    $on: function() {}
-  };
-  var stateMock = {
-    go: function() {}
-  };
-  var dbMock = {
-    sync: function() {},
-    changes: function() {
-      return {
-        on: function() {}
-      }
-    }
-  };
-  var httpMock = {
-    get: function() {
-      return {
-        then: function() {}
-      };
-    }
-  };
-  var $user = 'user';
-  var $set = function () { };
-  var $origin = 'http://localhost:3000';
-var scopeMock = {
+var scope = {
   $on: function() {}
 };
-var stateMock = {
+var state = {
   go: function() {}
 };
-var dbMock = {
-  sync: function() {},
-  changes: function() {
+var session = {
+  create: function (user) {
+    var deferred = q.defer();
+    setTimeout(function () { q.resolve({data: { userCtx: 'Foo'}})}, 100);
+    return deferred.promise;
+  },
+  get: function() {
     return {
-      on: function() {}
+      then: function(fn) {
+        fn({name: 'Foo'});
+      }
+    }
+  },
+  destroy: function () {
+    return {
+      then: function (fn) {
+        fn();
+      }
     }
   }
 };
-var httpMock = {
-  get: function() {
-    return {
-      then: function() {}
-    };
-  }
-};
+
 var $user = 'user';
 var $set = function () { };
 var $origin = 'http://localhost:3000';
 
 
-test('set $scope.title to TODO App', function(t) {
+test('app controller should call logout()', function (t) {
 
-  appCtrl(scopeMock, stateMock, dbMock, httpMock, $user, $set, $origin);
-  t.equals(scopeMock.title, 'The Ultimate TODO App');
+  state.go = function (state) {
+    if (state === 'splash') {
+      t.equals(state, 'splash');
+      t.end();
+    }
+  };
+
+  appCtrl(scope, session, state);
+  scope.logout();
+
+});
+
+//
+test('set $scope.title to TODO App', function(t) {
+  appCtrl(scope, session, state);
+  t.equals(scope.title, 'The Ultimate TODO App');
   t.end();
 });

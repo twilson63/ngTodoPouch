@@ -20,4 +20,7 @@ angular.module('TodoApp', ['ui.router', 'ngSanitize', 'angular-growl',
 .factory('$origin',['$window', function($window) {
   return $window.location.origin;
 }])
+.factory('$session', ['$db', '$http', '$origin', '$q', '$timeout',
+  require('./app-session')
+])
 ;
