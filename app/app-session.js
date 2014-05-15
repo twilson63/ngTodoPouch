@@ -1,6 +1,7 @@
+// app session
 module.exports = function ($db, $http, $origin, $q, $timeout) {
   return {
-    // takes user name and syncs pouchDb
+    // creates a session and establishes sync process
     create: function (user) {
       var deferred = $q.defer();
       var opts = { live: true };
@@ -11,6 +12,7 @@ module.exports = function ($db, $http, $origin, $q, $timeout) {
       }, 1);
       return deferred.promise;
     },
+    // queries server to see if session is still active
     get: function () {
       var deferred = $q.defer();
       $http.get('/api/session').then(function (res) {
@@ -22,6 +24,7 @@ module.exports = function ($db, $http, $origin, $q, $timeout) {
       });
       return deferred.promise;
     },
+    // removes session from server.
     destroy: function () {
       return $http.post('/api/logout');
     }

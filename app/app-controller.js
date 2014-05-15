@@ -1,8 +1,11 @@
 // Application Controller
 module.exports = function ($scope, $session, $state) {
   // init scope
+  // set app title
   $scope.title = 'The Ultimate TODO App';
+  // listen for registration event and create session
   $scope.$on('account:registered', session);
+  // listen for login in event and create session
   $scope.$on('account:loggedIn', session);
   // need to send request to kill session
   $scope.logout = function () {

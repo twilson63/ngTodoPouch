@@ -91,10 +91,9 @@ module.exports = function ($urlRouterProvider, $httpProvider) {
   // $httpProvider.interceptors.push(function ($rootScope, $state, $q) {
   //   return {
   //     'responseError': function (rejection) {
-  //       console.log($state.current);
-        //if (rejection.state === 401 && $state.current != login) {
-        //  $state.go('login');
-  //       //}
+  //       if (rejection.state === 401 && $state.current != login) {
+  //        $state.go('login');
+  //       }
   //     }
   //   }
   // });
@@ -104,8 +103,11 @@ module.exports = function ($urlRouterProvider, $httpProvider) {
 // Application Controller
 module.exports = function ($scope, $session, $state) {
   // init scope
+  // set app title
   $scope.title = 'The Ultimate TODO App';
+  // listen for registration event and create session
   $scope.$on('account:registered', session);
+  // listen for login in event and create session
   $scope.$on('account:loggedIn', session);
   // need to send request to kill session
   $scope.logout = function () {
@@ -134,9 +136,10 @@ module.exports = function ($scope, $session, $state) {
 };
 
 },{}],14:[function(require,module,exports){
+// app session
 module.exports = function ($db, $http, $origin, $q, $timeout) {
   return {
-    // takes user name and syncs pouchDb
+    // creates a session and establishes sync process
     create: function (user) {
       var deferred = $q.defer();
       var opts = { live: true };
@@ -147,6 +150,7 @@ module.exports = function ($db, $http, $origin, $q, $timeout) {
       }, 1);
       return deferred.promise;
     },
+    // queries server to see if session is still active
     get: function () {
       var deferred = $q.defer();
       $http.get('/api/session').then(function (res) {
@@ -158,6 +162,7 @@ module.exports = function ($db, $http, $origin, $q, $timeout) {
       });
       return deferred.promise;
     },
+    // removes session from server.
     destroy: function () {
       return $http.post('/api/logout');
     }
@@ -169,23 +174,30 @@ require('angular-ui-router/release/angular-ui-router')
 require('angular-sanitize/angular-sanitize');
 require('angular-growl/build/angular-growl');
 
+// register app module
 angular.module('TodoApp', ['ui.router', 'ngSanitize', 'angular-growl',
   require('./splash').name,
   require('./account').name,
   require('./lists').name
 ])
+// configure routes
 .config(['$urlRouterProvider', '$httpProvider', require('./app-config')])
+// add application controller
 .controller('ApplicationCtrl', ['$scope', '$session', '$state', require('./app-controller')])
+// map to pouchdb
 .factory('$db', function() {
   return function (user) {
     return PouchDB(user + '_todos');
   }
   //var url = $window.location.origin + '/db/' + $window.localStorage.getItem('user');
 })
+// add underscore
 .constant('$us', require('underscore'))
+// add server origin
 .factory('$origin',['$window', function($window) {
   return $window.location.origin;
 }])
+// add app session factory
 .factory('$session', ['$db', '$http', '$origin', '$q', '$timeout',
   require('./app-session')
 ])
