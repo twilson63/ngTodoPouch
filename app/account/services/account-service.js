@@ -5,6 +5,9 @@ module.exports = function ($http) {
     },
     $login: function(user) {
       return $http.post('/api/login', user);
+    },
+    $forgot: function(user) {
+      return $http.post('/api/forgot', user);
     }
   }
 }
