@@ -1,0 +1,8 @@
+{
+  "remote": {
+    "default": {
+      "hub": "hub.eirenerx.com:45366",
+      "secret": "foo"
+    }
+  }
+}
