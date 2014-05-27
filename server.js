@@ -1,2 +1,2 @@
 var app = require(__dirname + '/app');
-app.listen(3000);
+app.listen(process.argv[2] || 3000);
