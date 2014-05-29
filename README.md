@@ -2,95 +2,64 @@
 
 This is a tutorial repo that walks you through creating a Federated AngularJS Todo Application using the following tools:
 
-AngularJS
-Bootstrap
-Atomify
-PouchDb
-NodeJS
-CouchDb - Cloudant
+* AngularJS
+* Bootstrap
+* Atomify
+* PouchDb
+* NodeJS
+* CouchDb or Cloudant
 
 The application will be setup to register an account then login and add todos and mark them complete.  Your account should be accessible anywhere, including offline.
 
-The purpose is to experiement with a reactive architecture that shares nothing using pouchdb, couchdb, and nodejs.
+The purpose is to experiment with a reactive architecture that shares nothing using pouchdb, couchdb, and nodejs.
 
 ## Setup
 
 1. Install Nodejs and Npm - http://nodejs.org
+1a. You may want to set your user to own your /usr/local directory so you do not have to type `sudo` for every npm global command
 2. Install bower -> `npm install bower -g`
 3. Create Project Directory `todo-app`
 4. Open Terminal in the todo-app directory
 5. Edit/Create a `.bowerrc' file and add the following:
 
-```
-{
-  "directory": "node_modules"
-}
-```
-
 The `.bowerrc' file allows you to modify the default options of the bower application, here we are changing the directory from `bower_components` to `node_modules`.
 
 This is a hack that we will use to import `angular` and `angular-ui-router` into our browserify style app structure.
 
-6. run bower init and follow prompts
-
-```
-bower init
-bower install bootstrap angular angular-ui-router --save
-```
-
-7. run npm init and follow prompts
-
-```
-npm init
-# maybe add hbs 'handlebars' for server-side
-npm install express pouchdb nano --save
-npm install tap atomify --save-dev
-```
-
+6. create bower.json and install bootstrap and angular
+7. create package.json and install express and nano
 8. setup build scripts in package.json
-
-```
-{
-  ...
-  "scripts": {
-    "watch": "atomify -d",
-    "start": "node server.js",
-    "test" : "node test/**/*.js",
-    "dev": "npm run watch & npm start"
-  },
-  ...
-}
-```
-
 9. setup atomify in package.json
-
-```
-{
-  ...
-  "atomify": {
-    "js": {
-      "entry": "app/index.js",
-      "output": "www/bundle.js",
-      "watch": true
-    },
-    "css": {
-      "entry": "app/index.css",
-      "output": "www/bundle.css"
-    }
-  },
-  ...
-}
-```
-
 10 setup project directories and files
 
 ```
+npm install bower -g
+echo '{"directory": "node_modules"}' > .bowerrc
+echo '{"name": "todo-list", "version": "0.0.0"}' > bower.json
+bower install bootstrap angular angular-ui-router pouchdb --save
+
+echo '{"name": "todo-list", "version": "0.0.0", }' > package.json
+npm install jaws underscore request async uuid nano --save
+npm install tap atomify nodemon --save-dev
+
+# add scripts
+json -I -f package.json -e 'this.scripts={watch:"atomify -d", start:"nodemon server.js", test: "tap **/*_test.js", dev:"npm run watch & npm start"};'
+
+# atomify
+json -I -f package.json -e 'this.atomify={js:{entry:"app/index.js",output:"www/bundle.js"}, css: {entry:"app/index.css", output:"www/bundle.css"}}'
+
 mkdir app
 mkdir test
 mkdir www
-touch www/index.html
-touch app/index.js
-touch app/index.css
+(curl -L# https://gist.githubusercontent.com/twilson63/d88d6175b64f524c2884/raw/fc7d852865d57e3642352448e70539c0bff0bbd5/index.html > www/index.html)
+(curl -L# https://gist.githubusercontent.com/twilson63/d88d6175b64f524c2884/raw/fc7d852865d57e3642352448e70539c0bff0bbd5/index.js > app/index.js)
+(curl -L# https://gist.githubusercontent.com/twilson63/d88d6175b64f524c2884/raw/fc7d852865d57e3642352448e70539c0bff0bbd5/index.css > app/index.css)
+```
+
+or if you don't want to type ||||
+                             VVVV
+```
+(curl -L# https://gist.githubusercontent.com/twilson63/d88d6175b64f524c2884/raw/aa39d37ed5fc12931a17e42ab8c854ccb6e91511/setup.sh | sh)
 ```
 
 So these 10 steps should ge you setup to start coding.
@@ -138,12 +107,11 @@ module.exports = app;
 
 ``` html
 <!DOCTYPE html>
-<html ng-app="TodoApp">
+<html ng-app="todolists">
   <head>
     <meta charset="utf-8">
     <title>Todo App</title>
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,100' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bundle.css">
   </head>
   <body>
@@ -160,7 +128,7 @@ module.exports = app;
 ```
 cp -rf node_modules/bootstrap/dist/. www
 ```
-## Seting up the client app
+## Setting up the client app
 
 In the app folder lets open the index.js file
 and add the following:
@@ -202,4 +170,3 @@ body: {
 ---
 
 Lets go ahead and create some quick tests
-
