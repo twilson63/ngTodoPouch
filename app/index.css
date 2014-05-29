@@ -1,6 +1,0 @@
-/* with atomify adding css with `import` is just like nodejs require */
-@import 'angular-growl/build/angular-growl.min.css';
-
-body: {
-  font-family: 'Roboto', sans-serif;
-}
