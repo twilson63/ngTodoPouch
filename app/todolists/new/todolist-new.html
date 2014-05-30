@@ -1,0 +1,21 @@
+<div class="container">
+  <h2>New List</h2>
+  <form name="form" novalidate ng-submit="save(list)">
+    <div class="form-group">
+      <label>Name</label>
+      <input class="form-control" ng-model="list.name" required>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea class="form-control" ng-model="list.description"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Tags</label>
+      <input class="form-control" placeholder="foo, bar, bam" ng-model="list.tags">
+    </div>
+    <div class="form-group">
+      <button class="btn btn-default" ng-disabled="form.$invalid">Save</button>
+      <a class="btn btn-default" ui-sref="todolists.list">Cancel</a>
+    </div>
+  </form>
+</div>

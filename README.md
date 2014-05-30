@@ -157,3 +157,18 @@ package.json - change test cmd
 }
 
 ```
+
+### Lesson 3 (links and forms)
+
+```
+mkdir app/todolists/new
+touch app/todolists/new/todolist-new.html
+touch app/todolists/new/todolist-new-controller.js
+touch app/todolists/new/todolist-new-controller_test.js
+
+mkdir app/todolists/show
+touch app/todolists/show/todolist-show.html
+touch app/todolists/show/todolist-show-controller.js
+touch app/todolists/show/todolist-show-controller_test.js
+
+```

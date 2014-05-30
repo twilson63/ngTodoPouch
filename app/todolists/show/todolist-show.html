@@ -1,0 +1,33 @@
+<div class="container">
+  <div class="pull-right">
+    <button class="btn btn-warning" ng-click="rmDone(list)">
+      Archive Completed Tasks
+    </button>
+    <button class="btn btn-default" ng-click="save(list)">
+      Save
+    </button>
+  </div>
+  <h2>
+    {{list.name}}
+    <span class="glyphicon glyphicon-trashglyphicon glyphicon-trash" style="font-size: .5em;" ng-click="rmList(list)"></span>
+  </h2>
+  <p>{{list.description}}</p>
+  <form class="form-horizontal" novalidate ng-submit="add(task)">
+    <div class="form-group">
+      <input class="form-control" placeholder="Add Task and Press Enter" ng-model="task.description">
+    </div>
+  </form>
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="task in list.tasks | orderBy:'done':false">
+      <div class="pull-right">
+        <i class="glyphicon glyphicon-trashglyphicon glyphicon-trash" ng-click="rmTask(task)"></i>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input class="" type="checkbox" ng-model="task.done">
+          {{task.description}}
+        </label>
+      </div>
+    </li>
+  </ul>
+</div>

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "dependencies": {
     "express": "^4.3.2",
-    "nano": "^5.9.1"
+    "nano": "^5.9.1",
+    "underscore": "^1.6.0"
   },
   "devDependencies": {
     "tap": "^0.4.9",
@@ -27,7 +28,11 @@
       "open": "true",
       "path": "index.html",
       "lr": {
-        "patterns": ["www/*.html", "www/*.js", "www/*.css"]
+        "patterns": [
+          "www/*.html",
+          "www/*.js",
+          "www/*.css"
+        ]
       }
     },
     "js": {

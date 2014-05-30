@@ -1,9 +1,9 @@
 <div class="pull-right">
-  <button class="btn btn-default">New List</button>
+  <a class="btn btn-default" ui-sref="todolists.new">New List</a>
 </div>
 <h2>My Lists</h2>
 <div class="list-group">
-  <a class="list-group-item" ng-repeat="item in list">
+  <a class="list-group-item" ng-repeat="item in list" ui-sref="todolists.show({id: item._id})">
     {{item.name}}
   </a>
 </div>
