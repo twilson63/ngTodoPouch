@@ -1,5 +1,5 @@
 {
-  "name": "todo-list",
+  "name": "start",
   "version": "0.0.0",
   "dependencies": {
     "express": "^4.3.2",
@@ -14,15 +14,27 @@
     "jshint": "^2.5.1"
   },
   "scripts": {
-    "watch": "atomify -d",
-    "start": "nodemon server.js",
-    "test": "tap **/*_test.js",
-    "dev": "npm run watch & npm start"
+    "install": "bower install",
+    "start": "atomify -d",
+    "test": "tap **/*_test.js"
   },
   "atomify": {
+    "server": {
+      "st": {
+        "path": "./www",
+        "cache": false
+      },
+      "open": "true",
+      "path": "index.html",
+      "lr": {
+        "patterns": ["www/*.html", "www/*.js", "www/*.css"]
+      }
+    },
     "js": {
       "entry": "app/index.js",
-      "output": "www/bundle.js"
+      "output": "www/bundle.js",
+      "watch": true,
+      "debug": true
     },
     "css": {
       "entry": "app/index.css",
