@@ -1,10 +1,13 @@
-module.exports = function ($scope, growl, underscore, $window) {
+module.exports = function ($scope, growl, underscore, $window,
+  list, save, remove) {
   var _ = underscore;
-  $scope.list = {};
+  $scope.list = list;
 
   $scope.save = function(list) {
-    growl.addSuccessMessage('Finished working on this list');
-    $scope.$emit('list:updated', list);
+    save(list).then(function(list) {
+      growl.addSuccessMessage('Finished working on this list');
+      $scope.$emit('list:updated', list);
+    });
   };
 
   $scope.add = function (task) {
@@ -27,8 +30,10 @@ module.exports = function ($scope, growl, underscore, $window) {
 
   $scope.rmList = function(list) {
     if ($window.confirm('Are you sure?')) {
-      growl.addSuccessMessage('Successfully remoted list');
-      $scope.$emit('list:updated', list);
+      remove(list).then(function(res) {
+        growl.addSuccessMessage('Successfully remoted list');
+        $scope.$emit('list:updated', res);        
+      });
     }
   };
 };

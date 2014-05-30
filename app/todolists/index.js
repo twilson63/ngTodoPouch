@@ -19,7 +19,22 @@ module.exports = angular.module('app.todolists', [])
       .state('todolists.show', {
         url: '/:id',
         controller: require('./show/todolist-show-controller'),
-        template: require('./show/todolist-show.html')
+        template: require('./show/todolist-show.html'),
+        resolve: {
+          list: function(todolistsDb, $stateParams) {
+            return todolistsDb().$get($stateParams.id);
+          },
+          save: function(todolistsDb) {
+            return function(list) {
+              return todolistsDb().$put(list);
+            };
+          },
+          remove: function(todolistsDb) {
+            return function(list) {
+              return todolistsDb().$remove(list);
+            }
+          }
+        }
       });
    })
    .factory('todolistsDb', require('./services/todolist-db'));

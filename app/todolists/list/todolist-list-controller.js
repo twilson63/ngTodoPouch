@@ -1,6 +1,5 @@
-module.exports = function($scope) {
-  $scope.list = [
-    {name: 'List 1'},
-    {name: 'List 2'}
-  ];
+module.exports = function($scope, todolistsDb) {
+  todolistsDb().$all().then(function(results) {
+    $scope.list = results;
+  });
 };
