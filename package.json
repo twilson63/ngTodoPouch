@@ -16,7 +16,7 @@
   "scripts": {
     "install": "bower install",
     "start": "atomify -d",
-    "test": "tap **/*_test.js"
+    "test": "tap ./app/**/*_test.js"
   },
   "atomify": {
     "server": {

@@ -109,4 +109,51 @@ angular.module('todolists', ['ui.router', 'angular-growl',
 ])
 ```
 
-### Lesson 2 (Controllers and ng-repeat)
+### Lesson 2 (Controllers, ng-repeat, and testing)
+
+In this lesson we are going angularize our mocked up html.
+
+Lets create a controller:
+
+```
+touch app/todolists/list/todolist-list-controller.js
+touch app/todolists/list/todolist-list-controller_test.js
+```
+
+todolist-list-controller.js
+
+```
+module.exports = function($scope) {
+  $scope.list = [
+    {name: 'List 1'},
+    {name: 'List 2'}
+  ];
+};
+```
+
+todolist-list-controller_test.js
+
+```
+var test = require('tap').test;
+var listCtrl = require('./todolist-list-controller');
+
+test('scope.list should have 2 items', function(t){
+  var scope = {};
+  listCtrl(scope);
+  t.equals(scope.list.length, 2);
+  t.end();
+});
+```
+
+package.json - change test cmd
+
+```
+{
+  ...
+  "scripts": {
+    "test": "tap ./app/**/*_test.js"
+  }
+  ...
+}
+
+```

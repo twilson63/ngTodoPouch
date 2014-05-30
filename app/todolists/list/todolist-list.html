@@ -3,6 +3,7 @@
 </div>
 <h2>My Lists</h2>
 <div class="list-group">
-  <a class="list-group-item">List 1</a>
-  <a class="list-group-item">List 2</a>
+  <a class="list-group-item" ng-repeat="item in list">
+    {{item.name}}
+  </a>
 </div>

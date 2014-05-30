@@ -8,7 +8,7 @@ module.exports = angular.module('app.todolists', [])
       })
       .state('todolists.list', {
         url: '/',
-        controller: function () {},
+        controller: require('./list/todolist-list-controller'),
         template: require('./list/todolist-list.html')
       });
    });
