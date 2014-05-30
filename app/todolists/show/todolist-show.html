@@ -18,14 +18,14 @@
     </div>
   </form>
   <ul class="list-group">
-    <li class="list-group-item" ng-repeat="task in list.tasks | orderBy:'done':false">
+    <li class="list-group-item" ng-repeat="task in list.tasks | orderBy:'done':true">
       <div class="pull-right">
         <i class="glyphicon glyphicon-trashglyphicon glyphicon-trash" ng-click="rmTask(task)"></i>
       </div>
       <div class="checkbox">
         <label>
           <input class="" type="checkbox" ng-model="task.done">
-          {{task.description}}
+          <span ng-class="{ completed: task.done }">{{task.description}}</span>
         </label>
       </div>
     </li>

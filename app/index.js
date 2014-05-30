@@ -20,4 +20,4 @@ angular.module('todolists', ['ui.router', 'angular-growl',
     });
 
   })
-  .constant('$us', require('underscore'));
+  .constant('underscore', require('underscore'));
