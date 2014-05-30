@@ -1,7 +1,13 @@
-module.exports = function($scope, growl) {
+module.exports = function($scope, growl, todolistsDb) {
+  var db = todolistsDb();
+
   $scope.save = function(list) {
-    // do save functionality
-    growl.addSuccessMessage('Successfully created list!');
-    $scope.$emit('list:created', list);
+    db.$post(list)
+      .then(function(list) {
+        growl.addSuccessMessage('Successfully created list!');
+        $scope.$emit('list:created', list);
+      },function(err) {
+        growl.addErrorMessage(err.message);
+      });
   }
 }

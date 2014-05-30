@@ -174,3 +174,7 @@ touch app/todolists/show/todolist-show-controller_test.js
 ```
 
 ### Lesson 4 (add/complete/remove todo items)
+
+### Lesson 5 (persist data to pouchdb)
+
+### Lesson 6 (load data from pouchdb)

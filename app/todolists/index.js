@@ -21,4 +21,5 @@ module.exports = angular.module('app.todolists', [])
         controller: require('./show/todolist-show-controller'),
         template: require('./show/todolist-show.html')
       });
-   });
+   })
+   .factory('todolistsDb', require('./services/todolist-db'));

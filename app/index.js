@@ -20,4 +20,7 @@ angular.module('todolists', ['ui.router', 'angular-growl',
     });
 
   })
-  .constant('underscore', require('underscore'));
+  .constant('underscore', require('underscore'))
+  .factory('pouch', function() {
+    return PouchDB('todolists');
+  });
