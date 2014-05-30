@@ -172,3 +172,5 @@ touch app/todolists/show/todolist-show-controller.js
 touch app/todolists/show/todolist-show-controller_test.js
 
 ```
+
+### Lesson 4 (add/complete/remove todo items)
