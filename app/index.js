@@ -1,3 +1,8 @@
+/*
+The index.js page is your entry point for your javascript
+module system.  Pulling external modules from the `node_modules`
+folder.
+*/
 require('angular/angular');
 require('angular-ui-router/release/angular-ui-router');
 require('angular-sanitize/angular-sanitize');

@@ -1,7 +1,15 @@
+/* entry point for the bundle.css files */
+/*
+In this file you can use the @import like you are using require
+in commonjs.  The import will pull from node_modules or a specified
+path and merge it in to the bundle.css file.
+*/
+/* add bootstrap to bundle.css */
 @import 'bootstrap/dist/css/bootstrap.css';
-/* with atomify adding css with `import` is just like nodejs require */
+/* add angular-growl to your bundle.css */
 @import 'angular-growl/build/angular-growl.min.css';
 
-body: {
+/* add the Roboto Font */
+body {
   font-family: 'Roboto', sans-serif;
 }
