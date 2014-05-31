@@ -1,32 +1,6 @@
-# ngTodoPouch
+# ngTodoPouch - Lesson1
 
-An AngularJS Todo App Tutorial that uses PouchDb as a datastore.
 
-This readme file will walk you through step by step on building an AngularJS todo application.
-
-## Setup
-
-In this step we will setup your dev environment to get started!
-
-```
-# clone repo
-git clone https://github.com/twilson63/ngTodoPouch.git
-# change to repo directory
-cd ngTodoPouch
-# git all branches
-git fetch all
-# checkout the setup branch
-git checkout setup
-# install modules
-npm install
-# install client modules
-# you may need to do `npm install bower -g` first
-bower install
-# confirm all tests pass
-npm test
-# start up app
-npm start
-```
 
 ## Lesson 1 (modules, state, and templates)
 

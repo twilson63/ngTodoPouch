@@ -1,14 +1,17 @@
-require('angular/angular');
-require('angular-ui-router/release/angular-ui-router');
-require('angular-sanitize/angular-sanitize');
-require('angular-growl/build/angular-growl');
+var start = module.exports = function(ng) {
+  ng.module('todolists', ['ui.router', 'angular-growl',
+    require('./todolists')(ng).name
+  ])
+  .config(require('./config'))
+  .controller('AppCtrl', require('./app-controller'));
+};
 
-angular.module('todolists', ['ui.router', 'angular-growl',
-  require('./todolists').name
-])
-  .config(function($urlRouterProvider) {
-    $urlRouterProvider.otherwise('/todolists/');
-  })
-  .controller('AppCtrl', function($scope, $rootScope) {
-    $rootScope.title = 'TodoLists';
-  });
+// dependencies ...
+if (!module.parent) {
+  require('angular/angular');
+  require('angular-ui-router/release/angular-ui-router');
+  require('angular-sanitize/angular-sanitize');
+  require('angular-growl/build/angular-growl');
+
+  start(angular);
+}
