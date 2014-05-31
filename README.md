@@ -3,7 +3,7 @@
 This is another todo app tutorial, this is the setup branch of this tutorial,
 if you have made it this far, then you are ready to get started.
 
-The `setup` branch takes care of installing all of the boilierplate for an
+The `setup` branch takes care of installing all of the build tools for an
 Atomify Angular Application.  
 
 There are a couple of things you need to do, to confirm your system is
