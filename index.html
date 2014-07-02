@@ -265,7 +265,7 @@ We are using the ng-bind directive to call $scope.remaining() function to get th
 <div class="highlight"><pre><span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"unstyled"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;li</span> <span class="na">ng-repeat=</span><span class="s">"todo in todos"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">ng-model=</span><span class="s">"todo.done"</span> <span class="na">ng-click=</span><span class="s">"updateTodo(todo)"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;span</span> <span class="na">ng-class=</span><span class="s">"{{done: todo.done"</span><span class="nt">&gt;</span>{{todo.text}}<span class="nt">&lt;/span&gt;</span>
+    <span class="nt">&lt;span</span> <span class="na">ng-class=</span><span class="s">"{done: todo.done}"</span><span class="nt">&gt;</span>{{todo.text}}<span class="nt">&lt;/span&gt;</span>
   <span class="nt">&lt;/li&gt;</span>
 <span class="nt">&lt;/ul&gt;</span>
 </pre></div>
